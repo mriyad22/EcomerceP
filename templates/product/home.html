@@ -1,0 +1,124 @@
+{% extends 'master/base.html' %}
+{% block title %}
+  ShopSphere | Modern Online Shopping
+{% endblock %}
+{% block content %}
+  <section class="hero">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-7 hero-copy">
+          <span class="eyebrow">Curated for you</span><h1 class="mt-3">Find things you’ll <span>love.</span></h1><p class="my-4">Discover quality products, great prices and a smooth shopping experience—all powered by Django.</p>
+          <div class="d-flex flex-wrap gap-2">
+            <a href="{% url 'products:product_list' %}" class="btn btn-primary btn-lg">Explore products <i class="bi bi-arrow-right ms-1"></i></a><a href="#categories" class="btn btn-light border btn-lg">Browse categories</a>
+          </div>
+          <div class="row g-3 mt-4">
+            <div class="col-4">
+              <div class="hero-stat">
+                <strong class="d-block">Fast</strong><small class="text-muted">Simple checkout</small>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="hero-stat">
+                <strong class="d-block">Secure</strong><small class="text-muted">Protected account</small>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="hero-stat">
+                <strong class="d-block">Fresh</strong><small class="text-muted">New arrivals</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="hero-panel">
+            <div class="p-3">
+              <span class="badge-soft">Featured collection</span><h4 class="fw-bold mt-3 mb-1">Shop the latest picks</h4><p class="text-muted small">Hand-picked products ready to discover.</p>
+            </div>
+            {% if featured.0.image %}
+              <img src="{{ featured.0.image.url }}" alt="{{ featured.0.name }}" />
+            {% else %}
+              <div class="product-placeholder" style="height:330px;border-radius:20px">
+                <i class="bi bi-image fs-1"></i>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="categories">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+          <span class="eyebrow">Explore</span><h2 class="section-title mt-1 mb-0">Shop by category</h2>
+        </div><a href="{% url 'products:product_list' %}" class="fw-bold text-primary">View all <i class="bi bi-arrow-right"></i></a>
+      </div>
+      
+      <div class="row g-3">
+        {% for category in categories %}
+          <div class="col-6 col-md-3">
+            <a class="category-card" href="{% url 'products:product_list' %}?category={{ category.slug }}">
+              {% if category.image %}
+                <img src="{{ category.image.url }}" alt="{{ category.name }}" />
+              {% else %}
+                <div class="category-placeholder">
+                  <i class="bi bi-grid"></i>
+                </div>
+              {% endif %}
+              <div class="p-3">
+                <strong>{{ category.name }}</strong><div class="small text-muted mt-1">
+                  Explore collection <i class="bi bi-arrow-up-right"></i>
+                </div>
+              </div>
+            </a>
+          </div>
+        {% empty %}
+          <div class="col-12">
+            <div class="empty-state">No categories yet. Add them from Django admin.</div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+          <span class="eyebrow">Editor’s picks</span><h2 class="section-title mt-1 mb-0">Featured products</h2>
+        </div><a href="{% url 'products:product_list' %}" class="fw-bold text-primary">Shop all <i class="bi bi-arrow-right"></i></a>
+      </div>
+      <div class="row g-4">
+        {% for product in featured %}
+          {% include 'product/product_card.html' with product=product %}
+        {% empty %}
+          <div class="col-12">
+            <div class="empty-state">No featured products yet.</div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+          <span class="eyebrow">Just arrived</span><h2 class="section-title mt-1 mb-0">Latest products</h2>
+        </div>
+      </div>
+      <div class="row g-4">
+        {% for product in latest %}
+          {% include 'product/product_card.html' with product=product %}
+        {% empty %}
+          <div class="col-12">
+            <div class="empty-state">No products yet.</div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'master/base.html' %}
+{% block title %}
+  Checkout | ShopSphere
+{% endblock %}
+{% block content %}
+  <section class="section-sm">
+    <div class="container">
+      <div class="d-flex align-items-center gap-4 mb-5">
+        <div class="step active">
+          <span class="step-number">1</span><strong>Shipping</strong>
+        </div>
+        <div class="text-muted">
+          <i class="bi bi-chevron-right"></i>
+        </div>
+        <div class="step">
+          <span class="step-number">2</span><span>Confirmation</span>
+        </div>
+      </div>
+      <div class="row g-4">
+        <div class="col-lg-7">
+          <div class="form-card">
+
+            <span class="eyebrow">Checkout</span><h2 class="fw-bold mt-1">Shipping details</h2><p class="text-muted">Where should we deliver your order?</p>
+            <form method="post" class="mt-4">
+              {% csrf_token %}{{ address_form.as_p }}<div class="soft-card p-3 my-4">
+                <div class="d-flex gap-3">
+                  <div class="empty-icon m-0" style="width:48px;height:48px;border-radius:14px">
+                    <i class="bi bi-cash-stack"></i>
+                  </div>
+                  <div>
+                    <strong>Cash on Delivery</strong><p class="small text-muted mb-0">Pay when your order arrives.</p>
+                  </div>
+                </div>
+              </div><button class="btn btn-primary btn-lg w-100">Place order · ৳{{ total }} <i class="bi bi-arrow-right ms-1"></i></button>
+            </form>
+          </div>
+        </div>
+        
+        <div class="col-lg-5">
+          <div class="summary-card">
+            <span class="eyebrow">Your order</span><h4 class="fw-bold mt-1">Order summary</h4>
+            {% for item in items %}
+              <div class="d-flex gap-2 py-3 border-bottom">
+                <div class="flex-grow-1">
+                  <strong class="d-block">{{ item.product.name }}</strong><small class="text-muted">
+                    Qty {{ item.quantity }}{% if item.variant %}
+                      · {{ item.variant.name }}
+                    {% endif %}
+                  </small>
+                </div><strong>৳{{ item.total_price }}</strong>
+              </div>
+            {% endfor %}
+            <div class="summary-row mt-2">
+              <span>Subtotal</span><span>৳{{ subtotal }}</span>
+            </div>
+            <div class="summary-row">
+              <span>Shipping</span><span>
+                {% if shipping %}
+                  ৳{{ shipping }}
+                {% else %}
+                  Free
+                {% endif %}
+              </span>
+            </div>
+            <div class="summary-row">
+              <span>Discount</span><span>- ৳{{ discount }}</span>
+            </div>
+            <div class="summary-total">
+              <span>Total</span><span>৳{{ total }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,48 @@
+# === Python (Byte-compiled / optimized / DLL files) ===
+__pycache__/
+migrations/
+*.py[cod]
+*$py.class
+
+# === Virtual Environment ===
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# === Django Specific ===
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# === Sensitive Data / Environments ===
+.env
+.env.[a-zA-Z]*
+!.env.example
+
+# === OS & System Files ===
+.DS_Store
+Thumbs.db
+
+# === IDEs and Code Editors ===
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+
+#===== My own list
+todo.txt
+users/
+
+brands/
+categories/
+products/gallery/

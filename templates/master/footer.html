@@ -1,0 +1,30 @@
+<footer class="site-footer">
+  <div class="container py-5">
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="footer-brand mb-2">
+          <i class="bi bi-bag-heart-fill me-2"></i>ShopSphere
+        </div>
+        <p class="mb-0">A clean, modern Django shopping experience for discovering products, managing carts and placing orders.</p>
+      </div>
+
+      <div class="col-6 col-lg-2">
+        <h6 class="text-white">Shop</h6>
+        <a class="d-block mb-2" href="{% url 'products:product_list' %}">All products</a>
+        <a class="d-block" href="{% url 'wishlist:wishlist_detail' %}">Wishlist</a>
+      </div>
+
+      <div class="col-6 col-lg-2">
+        <h6 class="text-white">Account</h6>
+        <a class="d-block mb-2" href="{% url 'accounts:profile' %}">Profile</a>
+        <a class="d-block" href="{% url 'order:order_list' %}">Orders</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="container d-flex justify-content-between flex-wrap gap-2">
+      <span>© 2026 ShopSphere</span><span>Built with Django & Bootstrap by RIYAD</span>
+    </div>
+  </div>
+</footer>

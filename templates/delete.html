@@ -1,0 +1,48 @@
+{% extends 'master/base.html' %}
+
+{% block title %}
+  {{ title }}
+{% endblock %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h5>{{title}}</h5>
+    
+    {% if object.name %}
+    <p>
+      Are you sure you want to delete
+      <strong>{{ object.name }}</strong>?
+    </p>
+    {% else %}
+    <p>
+      Are you sure you want to delete
+      <strong>{{ object.code }}</strong>?
+    </p>
+    {% endif %}
+      
+
+    <form method="POST">
+      {% csrf_token %}
+
+      <button type="submit" class="btn btn-danger" >Yes, Delete</button>
+    </form>
+
+    <br />
+
+    
+    {% if brand_page %}
+      <a href="{% url 'products:product_brand' %}" class="btn btn-primary">Cancel</a>
+    {% elif category_page %}
+      <a href="{% url 'products:product_category' %}" class="btn btn-primary">Cancel</a>
+    {% elif coupon_page %}
+      <a href="{% url 'coupon:coupons' %}" class="btn btn-primary">Cancel</a>
+    
+    {% endif %}
+  </div>
+
+  {% comment %} <style>
+    body {
+      background: linear-gradient(135deg, #74ebd5, #9face6);
+    }
+  </style> {% endcomment %}
+{% endblock %}

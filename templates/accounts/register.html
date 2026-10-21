@@ -1,0 +1,44 @@
+{% extends 'master/base.html' %}
+{% block title %}
+  {{title}}
+{% endblock %}
+{% block content %}
+  <section class="auth-wrap">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-xl-9">
+          <div class="auth-card row g-0">
+            <div class="col-md-5 auth-side">
+              <div class="auth-logo mb-5">
+                <i class="bi bi-stars"></i>
+              </div><span class="eyebrow text-white-50">Join ShopSphere</span><h1 class="fw-bold mt-2">A better way to shop online.</h1><ul class="list-unstyled mt-4 text-white-50">
+                <li class="mb-3">
+                  <i class="bi bi-check-circle me-2"></i>Save your favorite products
+                </li>
+                <li class="mb-3">
+                  <i class="bi bi-check-circle me-2"></i>Track every order
+                </li>
+                <li>
+                  <i class="bi bi-check-circle me-2"></i>Checkout in seconds
+                </li>
+              </ul>
+            </div>
+
+            <div class="col-md-7 auth-form">
+              <span class="eyebrow">Get started</span><h2 class="fw-bold mt-2">Create your account</h2><p class="text-muted mb-4">It only takes a minute.</p>
+              <form method="post">
+                {% csrf_token %}
+                {{ data.as_p }}
+                <button class="btn btn-primary w-100 mt-2">Create account <i class="bi bi-arrow-right ms-1"></i></button>
+              </form>
+              <p class="text-muted mt-4 mb-0">
+                Already registered? <a class="fw-bold" href="#">Sign in</a>
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

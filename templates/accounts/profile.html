@@ -1,0 +1,84 @@
+{% extends 'master/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}
+  {{ title }}
+{% endblock %}
+{% block content %}
+  <section class="section-sm">
+    <div class="container">
+      <div class="account-hero mb-4">
+        <div class="d-flex align-items-center gap-3">
+          {% if user.profile_image %}
+            <img class="avatar" src="{{ user.profile_image.url }}" alt="{{ user.username }}" />
+          {% else %}
+            <div class="avatar d-grid place-items-center" style="display:grid;place-items:center">
+              <i class="bi bi-person text-primary fs-2"></i>
+            </div>
+          {% endif %}
+          <div>
+            <div class="text-white-50 small">Account</div><h2 class="mb-1">{{ user.get_full_name|default:user.username }}</h2><div class="text-white-50">@{{ user.username }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="form-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <div>
+                <span class="eyebrow">Personal details</span><h4 class="fw-bold mb-0">Update profile</h4>
+              </div>
+            </div>
+
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              {{ data | crispy }}
+              <button class="btn btn-primary">Save changes</button>
+            </form>
+
+          </div>
+        </div>
+        
+        
+        {% comment %} order template {% endcomment %}
+        <div class="col-lg-4">
+          <div class="soft-card p-4 mb-3">
+            <div class="empty-icon mx-0 mb-3">
+              <i class="bi bi-receipt"></i>
+            </div><h5 class="fw-bold">Your orders</h5><p class="text-muted">View previous purchases and order status.</p><a href="{% url 'order:order_list' %}" class="btn btn-light border w-100">View orders</a>
+          </div>
+
+          {% comment %} Wishlist template {% endcomment %}
+          <div class="soft-card p-4">
+            <div class="empty-icon mx-0 mb-3">
+              <i class="bi bi-heart"></i>
+            </div><h5 class="fw-bold">Wishlist</h5><p class="text-muted">Keep products you love in one place.</p><a href="{% url 'wishlist:wishlist_detail' %}" class="btn btn-light border w-100">Open wishlist</a>
+          </div>
+
+          {% comment %} Address template {% endcomment %}
+          <div class="soft-card p-4 mt-3">
+            {% for a in address %}
+              <h4 class="fw-bold">Your address</h4>
+              <ul class="list-group">
+                <li class="list-group-item">Name: {{a.full_name}}</li>
+                <li class="list-group-item">Phone: {{a.phone}}</li>
+                <li class="list-group-item">Addess: {{a.address_line}}</li>
+                <li class="list-group-item">City: {{a.city}}</li>
+                
+                  <a href="{% url 'order:address_create' %}" class="list-group-item btn-primary text-light text-center">Update address</a>
+                
+              {% empty %}
+                <div class="empty-state">
+                  <div class="empty-icon">
+                    <i class="bi bi-home"></i>
+                  </div><h4>Create your address</h4><p class="text-muted">Looks like you haven't added anything yet.</p>
+                  <a href="{% url 'order:address_create' %}" class="btn btn-primary">Create address</a>
+                </div>
+              </ul>
+            {% endfor %}
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

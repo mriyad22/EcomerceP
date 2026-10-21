@@ -1,0 +1,38 @@
+{% extends 'master/base.html' %}
+{% block title %}
+  Payment | ShopSphere
+{% endblock %}
+{% block content %}
+  <section class="section-sm">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-7">
+          <div class="surface p-4 p-md-5 text-center">
+            <div class="empty-icon">
+              <i class="bi bi-credit-card"></i>
+            </div><span class="eyebrow">Payment information</span><h1 class="section-title mt-1">Payment details</h1><p class="text-muted">Order {{ order.order_number }}</p>
+            <div class="soft-card p-4 my-4 text-start">
+              <div class="summary-row">
+                <span>Amount</span><strong>৳{{ payment.amount }}</strong>
+              </div>
+              <div class="summary-row">
+                <span>Method</span><strong>{{ payment.get_method_display }}</strong>
+              </div>
+              <div class="summary-row">
+                <span>Status</span><span class="status {% if payment.status == 'PAID' %}
+                    success
+                  {% elif payment.status == 'FAILED' %}
+                    danger
+                  {% else %}
+                    warning
+                  {% endif %}">
+                  {{ payment.get_status_display }}
+                </span>
+              </div>
+            </div><a href="{% url 'order:order_detail' order.order_number %}" class="btn btn-primary">Back to order</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

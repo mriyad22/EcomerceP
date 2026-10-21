@@ -1,0 +1,97 @@
+{% extends 'master/base.html' %}
+{% block title %}
+  Shopping Cart | ShopSphere
+{% endblock %}
+{% block content %}
+  <section class="section-sm">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+          <span class="eyebrow">Shopping bag</span><h1 class="section-title mb-1">Your cart</h1><p class="text-muted mb-0">Review your items before checkout.</p>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-lg-7">
+          {% for item in items %}
+            <div class="cart-item mb-3">
+              <div class="row align-items-center g-3">
+                <div class="col-auto">
+                  {% if item.product.image %}
+                    <img class="cart-thumb" src="{{ item.product.image.url }}" alt="{{ item.product.name }}" />
+                  {% else %}
+                    <div class="cart-thumb d-grid" style="place-items:center">
+                      <i class="bi bi-image"></i>
+                    </div>
+                  {% endif %}
+                </div>
+
+                <div class="col">
+                  <a href="{% url 'products:product_detail' item.product.slug %}" class="fw-bold text-dark">{{ item.product.name }}</a>
+                  {% if item.variant %}
+                    <div class="small text-muted">Variant: {{ item.variant.name }}</div>
+                  {% endif %}
+                  <div class="price mt-1">৳{{ item.unit_price }}</div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="d-flex justify-content-end gap-2">
+                    {% comment %} Update cart item form {% endcomment %}
+                    <form method="post" action="{% url 'cart:update_item' item.id %}" class="d-flex gap-2">
+                      {% csrf_token %}
+                      <input name="quantity" type="number" min="1" value="{{ item.quantity }}" class="form-control" style="width:80px" />
+                      <button class="btn btn-light border" title="Update"><i class="bi bi-arrow-repeat"></i></button>
+                    </form>
+
+                    {% comment %} Delete cart item form {% endcomment %}
+                    <form method="post" action="{% url 'cart:remove_item' item.id %}">
+                      {% csrf_token %}
+                      <button class="btn btn-light border text-danger" title="Remove"><i class="bi bi-trash"></i></button>
+                    </form>
+                  </div>
+                  <div class="text-end fw-bold mt-2">৳{{ item.total_price }}</div>
+                </div>
+
+              </div>
+            </div>
+          {% empty %}
+            <div class="empty-state">
+              <div class="empty-icon">
+                <i class="bi bi-bag"></i>
+              </div><h4>Your cart is empty</h4><p class="text-muted">Looks like you haven't added anything yet.</p><a href="{% url 'products:product_list' %}" class="btn btn-primary">Start shopping</a>
+            </div>
+          {% endfor %}
+        </div>
+
+
+        
+        <div class="col-lg-5">
+          {% if items %}
+            <div class="summary-card">
+              <span class="eyebrow">Summary</span><h4 class="fw-bold mt-1">Order total</h4><div class="summary-row">
+                <span>Items</span><span>৳{{ cart.total_price }}</span>
+              </div>
+              <div class="summary-row">
+                <span>Shipping</span><span>Calculated at checkout</span>
+              </div>
+              <div class="summary-total">
+                <span>Total</span><span>৳{{ cart.total_price }}</span>
+              </div>
+
+              
+              {% comment %} Apply Coupon code here {% endcomment %}  
+              <form method="post" action="{% url 'coupon:apply_coupon' %}" class="mt-4">
+                {% csrf_token %}
+                <label>Coupon code</label><div class="input-group">
+                  <input name="code" class="form-control" placeholder="SAVE10" /><button class="btn btn-outline-primary">Apply</button>
+                </div>
+              </form>
+              <a href="{% url 'order:checkout' %}" class="btn btn-primary w-100 mt-4">Proceed to checkout <i class="bi bi-arrow-right ms-1"></i></a>
+            </div>
+          {% endif %}
+        </div>
+        
+      </div>
+    </div>
+  </section>
+{% endblock %}

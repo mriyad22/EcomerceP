@@ -1,0 +1,31 @@
+{% extends 'master/base.html' %}
+{% block title %}
+  Wishlist | ShopSphere
+{% endblock %}
+{% block content %}
+  <section class="section-sm">
+    <div class="container">
+      <div class="mb-4">
+        <span class="eyebrow">Saved for later</span>
+        <h1 class="section-title mb-1">My wishlist</h1>
+        <p class="text-muted">Products you want to come back to.</p>
+      </div>
+      
+      <div class="row g-4">
+        {% for item in wishlist.wishlist_items.all %}
+          {% include 'product/product_card.html' with product=item.product %}
+        {% empty %}
+          <div class="col-12">
+            <div class="empty-state">
+              <div class="empty-icon">
+                <i class="bi bi-heart"></i>
+              </div><h4>Your wishlist is empty</h4>
+              <p class="text-muted">Save products you love and find them here later.</p>
+              <a href="{% url 'products:product_list' %}" class="btn btn-primary">Discover products</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+{% endblock %}
