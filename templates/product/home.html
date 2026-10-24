@@ -48,41 +48,56 @@
     </div>
   </section>
 
+  
+  {% comment %} Category in home page {% endcomment %}
   <section class="section-sm" id="categories">
     <div class="container">
       <div class="d-flex justify-content-between align-items-end mb-4">
         <div>
-          <span class="eyebrow">Explore</span><h2 class="section-title mt-1 mb-0">Shop by category</h2>
+          <span class="eyebrow">Explore</span><h3 class="section-title mt-1 mb-0">Shop by category</h3>
         </div><a href="{% url 'products:product_list' %}" class="fw-bold text-primary">View all <i class="bi bi-arrow-right"></i></a>
       </div>
       
-      <div class="row g-3">
-        {% for category in categories %}
-          <div class="col-6 col-md-3">
-            <a class="category-card" href="{% url 'products:product_list' %}?category={{ category.slug }}">
-              {% if category.image %}
-                <img src="{{ category.image.url }}" alt="{{ category.name }}" />
-              {% else %}
-                <div class="category-placeholder">
-                  <i class="bi bi-grid"></i>
-                </div>
-              {% endif %}
-              <div class="p-3">
-                <strong>{{ category.name }}</strong><div class="small text-muted mt-1">
-                  Explore collection <i class="bi bi-arrow-up-right"></i>
-                </div>
-              </div>
-            </a>
+      <div class="row g-2">
+  {% for category in categories %}
+    <div class="col-6 col-md-4 col-lg-2">
+      <a class="category-card d-block h-100"
+         href="{% url 'products:product_list' %}?category={{ category.slug }}">
+
+        {% if category.image %}
+          <img
+            src="{{ category.image.url }}"
+            alt="{{ category.name }}"
+            class="w-100"
+            style="height: 75px; object-fit: cover;"
+          />
+        {% else %}
+          <div class="category-placeholder" style="height: 75px;">
+            <i class="bi bi-grid"></i>
           </div>
-        {% empty %}
-          <div class="col-12">
-            <div class="empty-state">No categories yet. Add them from Django admin.</div>
+        {% endif %}
+
+        <div class="p-2">
+          <strong class="d-block" style="font-size: 13px;">
+            {{ category.name }}
+          </strong>
+          <div class="small text-muted mt-1" style="font-size: 10px;">
+            Explore <i class="bi bi-arrow-up-right"></i>
           </div>
-        {% endfor %}
-      </div>
+        </div>
+
+      </a>
+    </div>
+  {% empty %}
+    <div class="col-12">
+      <div class="empty-state">No categories yet.</div>
+    </div>
+  {% endfor %}
+</div>
     </div>
   </section>
 
+  {% comment %} Featured products in home page {% endcomment %}
   <section class="section-sm">
     <div class="container">
       <div class="d-flex justify-content-between align-items-end mb-4">
@@ -102,6 +117,7 @@
     </div>
   </section>
 
+  {% comment %} Latest products in home page {% endcomment %}
   <section class="section-sm">
     <div class="container">
       <div class="d-flex justify-content-between align-items-end mb-4">

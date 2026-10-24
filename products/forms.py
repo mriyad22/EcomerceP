@@ -7,12 +7,25 @@ class CategoryForm(forms.ModelForm):
         model = CategoryModel
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if 'description' in self.fields:
+            self.fields['description'].widget.attrs.update({'rows':3})
+    
+
 
 #--------> Product Brand Form
 class BrandForm(forms.ModelForm):
     class Meta:
         model = BrandModel
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+    
+        if 'description' in self.fields:
+            self.fields['description'].widget.attrs.update({'rows':3})
 
 
 
@@ -24,9 +37,15 @@ class ProductForm(forms.ModelForm):
         exclude = [
             'product_owner',
             'created_at',
-            'updated_at'
+            'updated_at',
+            'discount_price'
         ]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if 'description' in self.fields:
+            self.fields['description'].widget.attrs.update({'rows':3})
 
 
 #-------> Product Image Form

@@ -1,10 +1,49 @@
+<!-- Django Messages Section (Center-Below Navbar) -->
 {% if messages %}
-<div class="container pt-3">
+<div id="django-messages-container" 
+     style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9999; width: 90%; max-width: 450px;">
+    
     {% for message in messages %}
-        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show rounded-4 border-0 shadow-sm" role="alert">
-            <i class="bi {% if message.tags == 'success' %}bi-check-circle{% elif message.tags == 'error' %}bi-exclamation-triangle{% else %}bi-info-circle{% endif %} me-2"></i>{{ message }}
-            <button class="btn-close" data-bs-dismiss="alert"></button>
+        <div class="custom-alert {{ message.tags }}" 
+             style="background: linear-gradient(135deg, {% if message.tags == 'success' %}#00b09b, #96c93d{% elif message.tags == 'error' %}#ff416c, #ff4b2b{% elif message.tags == 'warning' %}#f1c40f, #f39c12{% else %}#2193b0, #6dd5ed{% endif %}); 
+                    color: white; padding: 12px 25px; margin-bottom: 12px; border-radius: 50px; 
+                    box-shadow: 0 8px 15px rgba(0,0,0,0.1); display: flex; justify-content: space-between; 
+                    align-items: center; font-family: 'Segoe UI', Arial, sans-serif; 
+                    animation: slideDownFade 0.5s ease-out; border: 1px solid rgba(255,255,255,0.2);">
+            
+            <!-- Icon Based on Type -->
+            <span style="margin-right: 10px; font-size: 1.1rem;">
+                {% if message.tags == 'success' %}✓{% elif message.tags == 'error' %}✕{% else %}ℹ{% endif %}
+            </span>
+
+            <span style="flex-grow: 1; font-weight: 500; font-size: 0.95rem;">{{ message }}</span>
+            
+            <button onclick="this.parentElement.remove()" 
+                    style="background: none; border: none; color: white; cursor: pointer; font-size: 22px; line-height: 1; margin-left: 15px; opacity: 0.8;">
+                &times;
+            </button>
         </div>
     {% endfor %}
 </div>
+
+<style>
+    /* উপর থেকে নিচে নামার এবং হালকা থেকে গাঢ় হওয়ার এনিমেশন */
+    @keyframes slideDownFade {
+        from { transform: translateY(-20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+</style>
+
+<script>
+    // ৪ সেকেন্ড পর মেসেজগুলো অটোমেটিক চলে যাবে
+    setTimeout(function() {
+        let container = document.getElementById('django-messages-container');
+        if (container) {
+            container.style.transition = "all 0.6s ease";
+            container.style.opacity = "0";
+            container.style.transform = "translate(-50%, -20px)"; 
+            setTimeout(() => container.remove(), 600);
+        }
+    }, 4000); 
+</script>
 {% endif %}

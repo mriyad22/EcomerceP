@@ -1,35 +1,77 @@
-<div class="col-12 col-sm-6 col-lg-3">
-  <article class="product-card">
-    <a href="{% url 'products:product_detail' product.slug %}" class="product-media d-block">
+
+<div class="col-6 col-sm-4 col-lg-2">
+  <article class="product-card h-100">
+
+    <a href="{% url 'products:product_detail' product.slug %}"
+       class="product-media d-block">
+
       {% if product.image %}
-        <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}" />
+        <img
+          src="{{ product.image.url }}"
+          class="product-img"
+          alt="{{ product.name }}"
+          style="height: 110px; width: 100%; object-fit: cover;"
+        />
       {% else %}
-        <div class="product-placeholder">
-          <i class="bi bi-image fs-1"></i>
+        <div class="product-placeholder" style="height: 110px;">
+          <i class="bi bi-image fs-4"></i>
         </div>
       {% endif %}
-      {% if product.discount_price %}
-        <span class="badge bg-danger product-badge">Sale</span>
+
+      {% if product.discount_percentage %}
+        <span class="badge bg-danger product-badge">
+          {{ product.discount_percentage|floatformat:0 }}% OFF
+        </span>
       {% elif product.is_featured %}
         <span class="badge bg-primary product-badge">Featured</span>
       {% endif %}
+
     </a>
-    
-    <div class="p-3 d-flex flex-column" style="min-height:190px">
-      <div class="small text-muted mb-1">{{ product.brand.name|default:product.category.name }}</div><a href="{% url 'products:product_detail' product.slug %}" class="product-title fs-6 mb-2">{{ product.name }}</a><div class="mt-auto">
-        <div class="mb-3">
+
+    <div class="p-2 d-flex flex-column" style="min-height: 145px;">
+
+      <div class="small text-muted mb-1"
+           style="font-size: 10px;">
+        {{ product.brand.name|default:product.category.name }}
+      </div>
+
+      <a href="{% url 'products:product_detail' product.slug %}"
+         class="product-title mb-2"
+         style="font-size: 12px; line-height: 1.4;">
+        {{ product.name }}
+      </a>
+
+      <div class="mt-auto">
+
+        <div class="mb-2">
           {% if product.discount_price %}
-            <span class="price">৳{{ product.discount_price }}</span><del class="old-price ms-2">৳{{ product.price }}</del>
+            <span class="price" style="font-size: 13px;">
+              ৳{{ product.discount_price }}
+            </span>
+            <del class="old-price" style="font-size: 10px;">
+              ৳{{ product.price }}
+            </del>
           {% else %}
-            <span class="price">৳{{ product.price }}</span>
+            <span class="price" style="font-size: 13px;">
+              ৳{{ product.price }}
+            </span>
           {% endif %}
         </div>
-        <a href="{% url 'products:product_detail' product.slug %}" class="btn btn-primary w-100">View product <i class="bi bi-arrow-right ms-1"></i></a>
-        
-        {% if not request.user.is_customer %}
-          <a href="{% url 'products:product_edit' product.id %}" class="btn btn-primary w-100">Update <i class="bi bi-arrow-right ms-1"></i></a>
+
+        <a href="{% url 'products:product_detail' product.slug %}"
+           class="btn btn-primary btn-sm w-100 mb-1"
+           style="font-size: 10px; padding: 4px 2px;">
+          View product
+        </a>
+
+        {% if not request.user.is_customer and request.user.is_authenticated %}
+          <a href="{% url 'products:product_edit' product.id %}"
+             class="btn btn-outline-info btn-sm w-100"
+             style="font-size: 10px; padding: 4px 2px;">
+            Update
+          </a>
         {% endif %}
-          
+
       </div>
     </div>
   </article>

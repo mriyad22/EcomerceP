@@ -7,6 +7,9 @@ class AddressForm(forms.ModelForm):
         fields = '__all__'
         exclude = ['user']
 
-    widgets = {
-        'address_line':forms.Textarea(attrs={"class":"form-control", "rows":4})
-    }
+    # if use 'CRISPY' in template and wanna modify any field.
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if 'address_line' in self.fields:
+            self.fields['address_line'].widget.attrs.update({'rows':4})

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     #----> My app
+    'cotrolpanel',
     "accounts",
     'products',
     'cart',
@@ -142,7 +143,7 @@ MAILERS = {
 
 
 AUTH_USER_MODEL = "accounts.AuthUserModel"
-LOGIN_URL = "login"
+LOGIN_URL = "accounts:login"
 
 
 # Configure Crispy Forms to use Bootstrap 5

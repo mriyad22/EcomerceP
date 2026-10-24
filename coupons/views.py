@@ -65,6 +65,10 @@ def apply_coupon(request):
 #------> Create Coupon View
 @login_required
 def add_coupon(request):
+    if not request.user.username == 'superadmin':
+        messages.warning(request, "You don't have permission here")
+        return redirect('products:home')
+    
     coupon = CouponModel.objects.all()
     coupon_form = CouponForm(request.POST or None)
     if request.method == 'POST' and coupon_form.is_valid:
@@ -85,6 +89,10 @@ def add_coupon(request):
 #-----> Delete coupon View
 @login_required
 def delete_coupon(request, coupon_id):
+    if not request.user.username == 'superadmin':
+        messages.warning(request, "You don't have permission here")
+        return redirect('products:home')
+    
     coupon = get_object_or_404(CouponModel, id=coupon_id)
     if request.method == 'POST':
         coupon.delete()

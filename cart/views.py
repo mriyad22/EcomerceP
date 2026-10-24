@@ -52,7 +52,38 @@ def add_to_cart(request, product_id):
             messages.success(request, 'Product added to cart.')
         return redirect('cart:cart_detail')
     return redirect('products:product_detail', slug=product.slug)   # 'slug' It can take you back to the detail page of the product you were viewing.
-            
+
+
+#--------> Order Now View
+def order_now(request, product_id):
+    product = get_object_or_404(ProductModel, id=product_id, is_available=True)
+
+    if request.method != 'POST':
+        return redirect("products:product_detail", slug=product.slug)
+
+    form_data = AddToCartForm(request.POST)
+    variant = None
+    variant_id = request.POST.get('variant')
+    if variant_id:
+        variant = get_object_or_404(ProductVariantModel, id = variant_id, product=product, is_active=True)
+
+    if not form_data.is_valid():
+        messages.error(request, 'Please enter a valid quantity.')
+        return redirect("products:product_detail", slug=product.slug)
+
+    quantity = form_data.cleaned_data['quantity']
+    available_stock = variant.stock if variant else product.stock
+    if quantity > available_stock:
+        messages.error(request, 'Not enough stock available.')
+        return redirect('products:product_detail')
+
+    # Store only the selected product details in the session.
+    request.session['order_now'] = {
+        'product_id' : product.pk,
+        'variant_id' : variant.pk if variant else None,
+        'quantity' : quantity
+    }
+    return redirect('order:checkout')
 
 
 #------> Cart update item View

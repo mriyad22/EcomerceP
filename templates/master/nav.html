@@ -9,30 +9,31 @@
                 <li class="nav-item"><a class="nav-link" href="{% url 'products:home' %}">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'products:product_list' %}">Shop</a></li>
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Manage</a>
-                    <ul class="dropdown-menu border-0 shadow rounded-4 p-2">
-                        <li><a class="dropdown-item rounded-3" href="{% url 'order:order_list' %}">Orders</a></li>
-                        <li><a class="dropdown-item rounded-3" href="{% url 'coupon:coupons' %}">Coupons</a></li>
-                        <li><a class="dropdown-item rounded-3" href="#">Brands</a></li>
-                    </ul>
-                </li>
-
-                {% comment %} {% if user.is_staff %} {% endcomment %}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Products</a>
-                    <ul class="dropdown-menu border-0 shadow rounded-4 p-2">
-                        <li><a class="dropdown-item rounded-3" href="{% url 'products:product_create' %}">Add Product</a></li>
-                        <li><a class="dropdown-item rounded-3" href="{% url 'products:product_category' %}">Categories</a></li>
-                        <li><a class="dropdown-item rounded-3" href="{% url 'products:product_brand' %}">Brands</a></li>
-                    </ul>
-                </li>
-                {% comment %} {% endif %} {% endcomment %}
+                {% if request.user.is_authenticated %}
+                    {% if request.user.username == 'superadmin' %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'panel:dashboard' %}">Control pannel</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Manage</a>
+                        <ul class="dropdown-menu border-0 shadow rounded-4 p-2">
+                            <li><a class="dropdown-item rounded-3" href="{% url 'order:order_list' %}">Orders</a></li>
+                            <li><a class="dropdown-item rounded-3" href="{% url 'coupon:coupons' %}">Coupons</a></li>
+                            <li><a class="dropdown-item rounded-3" href="{% url 'products:product_category' %}">Categories</a></li>
+                            <li><a class="dropdown-item rounded-3" href="{% url 'products:product_brand' %}">Brands</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                    
+                    {% if not request.user.is_customer %}  
+                        <li class="nav-item"><a class="nav-link" href="{% url 'products:product_create' %}">Add Product</a></li>
+                    {% endif %}
+                {% endif %}
             </ul>
+
             <form class="d-flex nav-search me-lg-3 mb-3 mb-lg-0" action="{% url 'products:product_list' %}">
                 <input class="form-control" name="q" value="{{ query|default:'' }}" placeholder="Search products..." aria-label="Search products">
                 <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
             </form>
+
             <div class="d-flex align-items-center gap-2">
                 {% if user.is_authenticated %}
                     <a class="nav-icon-btn position-relative" href="{% url 'wishlist:wishlist_detail' %}" title="Wishlist"><i class="bi bi-heart"></i></a>

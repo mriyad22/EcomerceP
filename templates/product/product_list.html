@@ -6,7 +6,7 @@
         <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
             <div>
                 <span class="eyebrow">Store</span>
-                <h1 class="section-title mb-1">All products</h1>
+                <h3 class="section-title mb-1">All products</h3>
                 <p class="text-muted mb-0">Discover products that fit your style.</p>
             </div>
             <span class="badge-soft">{{ products|length }} results</span>
@@ -57,21 +57,84 @@
         </div> 
         
         {% comment %} All Product {% endcomment %}
+        
         <div class="row g-4">
-            {% for product in products %}
+            {% for product in page_obj %}
                 {% include "product/product_card.html" %}
 
             {% empty %}
                 <div class="col-12">
                     <div class="empty-state">
-                        <div class="empty-icon"><i class="bi bi-search"></i></div>
+                        <div class="empty-icon">
+                            <i class="bi bi-search"></i>
+                        </div>
                         <h4>No products found</h4>
-                        <p class="text-muted">Try another search term or remove some filters.</p>
-                        <a href="{% url 'products:product_list' %}" class="btn btn-primary">Clear filters</a>
+                        <p class="text-muted">
+                            Try another search term or remove some filters.
+                        </p>
+                        <a href="{% url 'products:product_list' %}"
+                        class="btn btn-primary">
+                            Clear filters
+                        </a>
                     </div>
                 </div>
             {% endfor %}
         </div>
+
+        <!-- Pagination Template -->
+        {% if page_obj.paginator.num_pages > 1 %}
+            <nav aria-label="Product pagination" class="mt-4">
+                <ul class="pagination justify-content-center">
+
+                    <!-- Previous Button -->
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link"
+                            href="?page={{ page_obj.previous_page_number }}">
+                                <i class="bi bi-chevron-left"></i>
+                                Previous
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">
+                                <i class="bi bi-chevron-left"></i>
+                                Previous
+                            </span>
+                        </li>
+                    {% endif %}
+
+                    <!-- Current Page -->
+                    <li class="page-item active">
+                        <span class="page-link">
+                            {{ page_obj.number }}
+                            of
+                            {{ page_obj.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    <!-- Next Button -->
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link"
+                            href="?page={{ page_obj.next_page_number }}">
+                                Next
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">
+                                Next
+                                <i class="bi bi-chevron-right"></i>
+                            </span>
+                        </li>
+                    {% endif %}
+
+                </ul>
+            </nav>
+        {% endif %}
+            
     </div>
 </section> 
 {% endblock %}

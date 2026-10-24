@@ -2,7 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from decimal import Decimal
 from django.db import transaction
+from django.views.decorators.http import require_http_methods
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from types import SimpleNamespace
 import uuid
+
 
 from .forms import *
 from .models import *
@@ -12,17 +17,55 @@ from payments.models import PaymentModel
 
 
 #----> Order Checkout View
+@login_required
+@require_http_methods(['GET', 'POST'])
 def checkout_view(request):
-    cart, _ = CartModel.objects.get_or_create(user=request.user)
-    items = list(cart.cart_items.select_related('product', 'variant'))
+    order_now = request.session.get('order_now')
+
+    # Buy Now builds a temporary checkout item from session data. It does not
+    # create a CartItem and does not include existing cart products.
+    if order_now:
+        product = get_object_or_404(ProductModel, pk=order_now.get('product_id'), is_available=True)
+        variant_id = order_now.get('variant_id')
+        variant = None
+        if variant_id:
+            variant = get_object_or_404(ProductVariantModel, product=product, is_active=True)
+        quantity = order_now.get('quantity', 0)
+        if not isinstance(quantity, int) or quantity < 1:
+            request.session.pop('order_now', None)
+            messages.error(request, "Please select a valid quantity.")
+            return redirect("products:product_detail", slug=product.slug)
+
+        unit_price = (
+            variant_id.price if variant and variant.price is not None else product.final_price
+        )
+
+        items = [SimpleNamespace(   #A temporary object has been created here using SimpleNamespace.
+            pk = None,
+            product=product,
+            variant=variant,
+            quantity=quantity,
+            unit_price=unit_price,
+            total_price=unit_price * quantity,
+        )]
+        cart = CartModel.objects.filter(user=request.user).first
+    else:   
+        cart, _ = CartModel.objects.get_or_create(user=request.user)
+        items = list(cart.cart_items.select_related('product', 'variant'))
+
     if not items:
         messages.error(request, 'Your cart is empty.')
         return redirect('cart:cart_detail')
 
+    
+    try:
+        ins_ad = request.user.user_address
+    except AddressModel.DoesNotExist:
+        ins_ad = None
     addresses = AddressModel.objects.filter(user=request.user)
-    address_form = AddressForm(request.POST or None)
+    address_form = AddressForm(request.POST or None, instance=ins_ad)
 
-    subtotal = cart.total_price
+    subtotal = sum((item.total_price for item in items), Decimal('0.00'))
     shipping = Decimal('100') if subtotal < Decimal('5000') else Decimal('0.00')
     discount = Decimal(request.session.get('coupon_discount', '0'))
     discount = min(discount, subtotal)  #Ensure that the discount is not greater than the subtotal.| min() returns the smaller of two values.
@@ -41,7 +84,7 @@ def checkout_view(request):
                 stock = item.variant.stock if item.variant else item.product.stock
                 if item.quantity > stock:
                     messages.error(request, f'Not enough stock for {item.product.name}.')
-                    return redirect('cart:cart_detail')
+                    return redirect('order:checkout')
 
             #---> Create Order Model
             order = OrderModel.objects.create(
@@ -93,7 +136,12 @@ def checkout_view(request):
                 coupon.used_count += 1
                 coupon.save(update_fields=["used_count"])
 
-            cart.cart_items.all().delete()
+            if order_now:
+                request.session.pop('order_now', None)
+
+            elif cart:
+                cart.cart_items.all().delete()
+
             request.session.pop("coupon_code", None)
             request.session.pop("coupon_discount", None)
 
@@ -117,6 +165,7 @@ def checkout_view(request):
 
 
 #--------> Order List View 
+@login_required
 def order_list(request):
     orders = OrderModel.objects.filter(user=request.user).order_by('-created_at')
 
@@ -129,6 +178,7 @@ def order_list(request):
 
 
 #------> Order Detail View
+@login_required
 def order_detail(request, order_number):
     order = get_object_or_404(
         OrderModel.objects.prefetch_related('order_items'),
@@ -145,6 +195,7 @@ def order_detail(request, order_number):
 
 
 #--------> Create Address  View
+@login_required
 def address_create(request):
     try:
         address = request.user.user_address

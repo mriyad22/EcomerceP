@@ -1,5 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST, require_http_methods
+from django.core.paginator import Paginator
+
 from .forms import *
 from .models import *
 
@@ -8,12 +12,20 @@ from django.db.models import Q
 
 #------> Product home view
 def home(request):
-    categories = CategoryModel.objects.filter(is_active=True)
-    featured = ProductModel.objects.filter(is_featured=True, is_available=True).select_related('category', 'brand')[:8]
-    latest = ProductModel.objects.filter(is_available=True).select_related('category', 'brand')[:12]
+    caegories = CategoryModel.objects.filter(is_active=True)
+    if request.user.is_authenticated:
+        if not request.user.is_customer:
+            featured = ProductModel.objects.filter(is_featured=True, is_available=True, product_owner=request.user).select_related('category', 'brand')[:8]
+            latest = ProductModel.objects.filter(is_available=True, product_owner=request.user).select_related('category', 'brand')[:12]
+        else:
+            featured = ProductModel.objects.filter(is_featured=True, is_available=True).select_related('category', 'brand')[:8]
+            latest = ProductModel.objects.filter(is_available=True).select_related('category', 'brand')[:12]
+    else:
+        featured = ProductModel.objects.filter(is_featured=True, is_available=True).select_related('category', 'brand')[:8]
+        latest = ProductModel.objects.filter(is_available=True).select_related('category', 'brand')[:12]
 
     con = {
-        'categories' : categories,
+        'categories' : caegories,
         'featured' : featured,
         'latest' : latest
     }
@@ -21,7 +33,12 @@ def home(request):
 
 
 #------> Product category View
+@login_required
 def product_category(request):
+    if not request.user.username == 'superadmin':
+        messages.warning(request, "You don't have permission here")
+        return redirect('products:home')
+    
     categories = CategoryModel.objects.all()
     form_data = CategoryForm(request.POST or None, request.FILES or None)
     if request.method == 'POST' and form_data.is_valid():
@@ -41,7 +58,12 @@ def product_category(request):
 
 
 #--------> product category Update view
+@login_required
 def product_category_edit(request, e_id):
+    if not request.user.username == 'superadmin':
+        messages.warning(request, "You don't have permission here")
+        return redirect('products:home')
+    
     category = get_object_or_404(CategoryModel, id = e_id)
     form_data = CategoryForm(request.POST or None, request.FILES or None, instance=category)
     if request.method == 'POST' and form_data.is_valid():
@@ -60,7 +82,12 @@ def product_category_edit(request, e_id):
 
 
 #--------> product category Delete view
+@login_required
 def product_category_delete(request, d_id):
+    if not request.user.username == 'superadmin':
+        messages.warning(request, "You don't have permission here")
+        return redirect('products:home')
+    
     category_del = get_object_or_404(CategoryModel, id = d_id)
     if request.method == 'POST':
         category_del.delete()
@@ -78,7 +105,12 @@ def product_category_delete(request, d_id):
 
 
 #-------> Product Brand view
+@login_required
 def product_brand(request):
+    if not request.user.username == 'superadmin':
+        messages.warning(request, "You don't have permission here")
+        return redirect('products:home')
+    
     brands = BrandModel.objects.all()
 
     form_data = BrandForm(request.POST or None, request.FILES or None)
@@ -100,7 +132,12 @@ def product_brand(request):
 
 
 #--------> product brand Update view
+@login_required
 def product_brand_edit(request, e_id):
+    if not request.user.username == 'superadmin':
+        messages.warning(request, "You don't have permission here")
+        return redirect('products:home')
+    
     brand = get_object_or_404(BrandModel, id = e_id)
     form_data = BrandForm(request.POST or None, request.FILES or None, instance=brand)
     if request.method == 'POST' and form_data.is_valid():
@@ -119,7 +156,12 @@ def product_brand_edit(request, e_id):
 
 
 #--------> product brand Delete view
+@login_required
 def product_brand_delete(request, d_id):
+    if not request.user.username == 'superadmin':
+        messages.warning(request, "You don't have permission here")
+        return redirect('products:home')
+
     brand_del = get_object_or_404(BrandModel, id = d_id)
     if request.method == 'POST':
         brand_del.delete()
@@ -136,7 +178,12 @@ def product_brand_delete(request, d_id):
 
 
 #---------> Product Create View here
+@login_required
 def product_create(request):
+    if request.user.is_customer:
+        messages.warning(request, "You don't have permission here")
+        return redirect('products:home')
+    
     form_data = ProductForm(request.POST or None, request.FILES or None)
     if request.method == "POST" and form_data.is_valid():
         product = form_data.save(commit=False)
@@ -156,13 +203,21 @@ def product_create(request):
 
 #--------> Product list view
 def product_list(request):
-    products = ProductModel.objects.filter(is_available = True).select_related('category', 'brand')
+    if request.user.is_authenticated:
+        if not request.user.is_customer:
+            products = ProductModel.objects.filter(is_available = True, product_owner=request.user).select_related('category', 'brand').order_by('-id')
+        else:
+            products = ProductModel.objects.filter(is_available = True).select_related('category', 'brand').order_by('-id')
+    else:
+        products = ProductModel.objects.filter(is_available = True).select_related('category', 'brand').order_by('-id')
+        
     categories = CategoryModel.objects.filter(is_active = True)
 
     query = request.GET.get('q', '').strip()
     category = request.GET.get('categoryx', '').strip()
     sort = request.GET.get('sort', '').strip()
 
+    #--> Search functionality
     if query:
         products = products.filter(
             Q(name__icontains=query) |
@@ -177,17 +232,21 @@ def product_list(request):
     if sort == 'new':
         products = products.order_by('-created_at')
     elif sort == 'low':
-        products = products.order_by('-price')
-    elif sort == 'high':
         products = products.order_by('price')
+    elif sort == 'high':
+        products = products.order_by('-price')
+
+    #--> Pagination
+    paginator = Paginator(products, 18)
+    page_obj = paginator.get_page(request.GET.get('page'))
 
 
     con = {
-        'products' : products,
         'categories' : categories,
         'query' : query,
         'selected_category' : category,
-        'selected_sort' : sort
+        'selected_sort' : sort,
+        'page_obj' : page_obj
     }
     return render(request, 'product/product_list.html', con)
 
@@ -210,8 +269,10 @@ def product_detail(request, slug):
 
 
 #--------> Product Edit view
+@login_required
 def product_edit(request, e_id):
     if request.user.is_customer:
+        messages.warning(request, "You don't have permission here")
         return redirect('products:home')
     
     product = get_object_or_404(ProductModel, id = e_id)
