@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "wishlist",
     "reviews",
     "coupons",
+    'trends',
 
     #---->Crispy form
     'crispy_forms',
@@ -129,7 +130,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
-STATIC_URL = 'static/'
+
 
 
 # Email

@@ -6,12 +6,14 @@ from django.core.paginator import Paginator
 
 from .forms import *
 from .models import *
+from trends.models import TrendStuffModel
 
 from django.db.models import Q
 
 
 #------> Product home view
 def home(request):
+    trends = TrendStuffModel.objects.all()
     caegories = CategoryModel.objects.filter(is_active=True)
     if request.user.is_authenticated:
         if not request.user.is_customer:
@@ -27,7 +29,8 @@ def home(request):
     con = {
         'categories' : caegories,
         'featured' : featured,
-        'latest' : latest
+        'latest' : latest,
+        'trends' : trends
     }
     return render(request, 'product/home.html', con)
 
