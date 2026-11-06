@@ -36,6 +36,8 @@
       <a href="{% url 'products:product_category' %}" class="btn btn-primary">Cancel</a>
     {% elif coupon_page %}
       <a href="{% url 'coupon:coupons' %}" class="btn btn-primary">Cancel</a>
+    {% elif trend_page %}
+      <a href="{% url 'coupon:coupons' %}" class="btn btn-primary">Cancel</a>
     
     {% endif %}
   </div>

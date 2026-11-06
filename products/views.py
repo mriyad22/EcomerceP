@@ -13,7 +13,8 @@ from django.db.models import Q
 
 #------> Product home view
 def home(request):
-    trends = TrendStuffModel.objects.all()
+    trends = TrendStuffModel.objects.filter(is_active=True).order_by('-created_at')
+    
     caegories = CategoryModel.objects.filter(is_active=True)
     if request.user.is_authenticated:
         if not request.user.is_customer:
