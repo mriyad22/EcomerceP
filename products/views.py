@@ -38,7 +38,7 @@ def home(request):
 
 #------> Product category View
 @login_required
-def product_category(request):
+def create_product_category(request):
     if not request.user.username == 'superadmin':
         messages.warning(request, "You don't have permission here")
         return redirect('products:home')
@@ -67,8 +67,10 @@ def product_category_edit(request, e_id):
     if not request.user.username == 'superadmin':
         messages.warning(request, "You don't have permission here")
         return redirect('products:home')
-    
+
+    categories = CategoryModel.objects.all()
     category = get_object_or_404(CategoryModel, id = e_id)
+
     form_data = CategoryForm(request.POST or None, request.FILES or None, instance=category)
     if request.method == 'POST' and form_data.is_valid():
         form_data.save()
@@ -77,6 +79,7 @@ def product_category_edit(request, e_id):
 
     con = {
         'data' : form_data,
+        'categories' : categories,
         'title' : 'Category updated.',
         'page_title' : 'Edit category',
         'btn' : 'Update'
@@ -110,7 +113,7 @@ def product_category_delete(request, d_id):
 
 #-------> Product Brand view
 @login_required
-def product_brand(request):
+def create_product_brand(request):
     if not request.user.username == 'superadmin':
         messages.warning(request, "You don't have permission here")
         return redirect('products:home')
@@ -130,7 +133,7 @@ def product_brand(request):
         'title' : 'Brands | ShopSphere',
         'btn' : 'Create brand'
     }
-    return render(request, 'product/product_brand.html', con)
+    return render(request, 'product/product_category.html', con)
 
 
 
@@ -142,7 +145,9 @@ def product_brand_edit(request, e_id):
         messages.warning(request, "You don't have permission here")
         return redirect('products:home')
     
+    brands = BrandModel.objects.all()
     brand = get_object_or_404(BrandModel, id = e_id)
+
     form_data = BrandForm(request.POST or None, request.FILES or None, instance=brand)
     if request.method == 'POST' and form_data.is_valid():
         form_data.save()
@@ -151,11 +156,12 @@ def product_brand_edit(request, e_id):
 
     con = {
         'data' : form_data,
+        'brands' : brands,
         'title' : 'brand updated.',
         'page_title' : 'Edit brand',
         'btn' : 'Update'
     }
-    return render(request, 'product/product_brand.html', con)
+    return render(request, 'product/product_category.html', con)
 
 
 
