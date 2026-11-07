@@ -11,7 +11,7 @@
 
                 {% if request.user.is_authenticated %}
                     {% if request.user.username == 'superadmin' %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'panel:dashboard' %}">Control pannel</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Manage</a>
                         <ul class="dropdown-menu border-0 shadow rounded-4 p-2">

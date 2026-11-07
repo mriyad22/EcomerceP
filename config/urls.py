@@ -29,6 +29,6 @@ urlpatterns = [
     path('review/', include('reviews.urls')),
     path('coupon/', include('coupons.urls')),
     path('payment/', include('payments.urls')),
-    path('', include('cotrolpanel.urls')),
+    path('', include('dashboard.urls')),
     path('', include('trends.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
