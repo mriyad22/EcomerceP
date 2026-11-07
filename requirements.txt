@@ -12,6 +12,7 @@ pillow==12.2.0
 pipenv==2026.0.3
 platformdirs==4.9.4
 python-discovery==1.1.1
+python-dotenv==1.2.4
 setuptools==82.0.1
 sqlparse==0.5.3
 tzdata==2025.2
