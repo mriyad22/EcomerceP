@@ -28,16 +28,27 @@ def staff_required(view_func):
 #-------> Dashboard View
 @staff_required
 def dashboard(request):
-    orders = OrderModel.objects.all()
+    if request.user.is_superuser:
+        total_products = ProductModel.objects.count()
+        total_categories = CategoryModel.objects.count()
+        total_brands =  BrandModel.objects.count()
+        orders = OrderModel.objects.all()
+
+    elif request.user.is_staff:
+        total_products = ProductModel.objects.filter(product_owner=request.user).count()
+        orders = OrderModel.objects.filter()
+        low_stock = ProductModel.objects.filter(product_owner=request.user, stock__lte=5).order_by('stock')[:6]
+
     context = {
-        'total_products': ProductModel.objects.count(),
-        'total_categories': CategoryModel.objects.count(),
-        'total_brands': BrandModel.objects.count(),
+        'total_products': total_products,
+        'total_categories': total_categories if request.user.is_superuser else None,
+        'total_brands': total_brands if request.user.is_superuser else None,
+
         'total_orders': orders.count(),
         'pending_orders': orders.filter(status=OrderModel.OrderStatus.PENDING).count(),
         'total_revenue': orders.filter(payment_status=OrderModel.PaymentStatus.PAID).aggregate(total=Sum('total_amount'))['total'] or 0,
-        'recent_orders': orders.select_related('user').order_by('-created_at')[:8],
-        'low_stock': ProductModel.objects.filter(stock__lte=5).order_by('stock')[:6],
+        'recent_orders': orders.select_related('user').order_by('-created_at')[:5],
+        'low_stock': ProductModel.objects.filter(stock__lte=5).order_by('stock')[:6] if request.user.is_superuser else low_stock,
     }
     return render(request, 'dashboard/index.html', context)
 
@@ -97,13 +108,24 @@ def product_delete(request, pk):
 
 def _catalog_page(request, model, form_class, template_title, list_name, pk=None):
     instance = get_object_or_404(model, pk=pk) if pk else None
+    
     form = form_class(request.POST or None, request.FILES or None, instance=instance)
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, f'{template_title[:-1] if template_title.endswith("s") else template_title} saved successfully.')
         return redirect(f'dashboard:{list_name}')
     items = model.objects.all().order_by('-id')
-    return render(request, 'dashboard/catalog.html', {'form': form, 'items': items, 'page_title': f'Edit {template_title[:-1].lower()}' if instance else f'Add {template_title[:-1].lower()}', 'list_title': template_title, 'list_name': list_name, 'list_url': f'dashboard:{list_name}', 'edit_route': f'dashboard:{list_name}_edit', 'delete_route': f'dashboard:{list_name}_delete'})
+
+    context = {
+        'form': form, 
+        'items': items, 
+        'page_title': f'Edit {template_title[:-1].lower()}' if instance else f'Add {template_title[:-1].lower()}', 
+        'list_title': template_title, 
+        'list_name': list_name, 
+        'list_url': f'dashboard:{list_name}', 'edit_route': f'dashboard:{list_name}_edit', 
+        'delete_route': f'dashboard:{list_name}_delete'
+    }
+    return render(request, 'dashboard/catalog.html', context)
 
 
 @staff_required
@@ -134,12 +156,15 @@ def brand_edit(request, pk):
     return _catalog_page(request, BrandModel, BrandForm, 'Brands', 'brands', pk)
 
 
+
 @staff_required
 @require_POST
 def brand_delete(request, pk):
     get_object_or_404(BrandModel, pk=pk).delete()
     messages.success(request, 'Brand deleted.')
     return redirect('dashboard:brands')
+
+
 
 #---------> Create a coupon View
 @staff_required

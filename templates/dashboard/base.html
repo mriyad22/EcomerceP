@@ -305,6 +305,14 @@
           <a class="admin-link" href="{% url 'dashboard:dashboard' %}"><i class="bi bi-speedometer2"></i>Dashboard</a>
 
           <div class="admin-label">Store management</div>
+          
+          {% if request.user.is_staff and not request.user.is_superuser %}
+          <a class="admin-link" href="{% url 'dashboard:products' %}"><i class="bi bi-box-seam"></i>Products</a>
+            
+          <div class="admin-label">Sales</div>
+          <a class="admin-link" href="{% url 'dashboard:orders' %}"><i class="bi bi-receipt"></i>All orders</a>
+          
+          {% elif request.user.is_superuser %}
           <a class="admin-link" href="{% url 'dashboard:products' %}"><i class="bi bi-box-seam"></i>Products</a>
           <a class="admin-link" href="{% url 'dashboard:categories' %}"><i class="bi bi-tags"></i>Categories</a>
           <a class="admin-link" href="{% url 'dashboard:brands' %}"><i class="bi bi-award"></i>Brands</a>
@@ -312,6 +320,7 @@
           
           <div class="admin-label">Sales</div>
           <a class="admin-link" href="{% url 'dashboard:orders' %}"><i class="bi bi-receipt"></i>All orders</a>
+          {% endif %}
 
           <div class="admin-label">Storefront</div>
           <a class="admin-link" href="{% url 'products:home' %}"><i class="bi bi-shop"></i>View website</a>
