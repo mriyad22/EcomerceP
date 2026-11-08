@@ -1,0 +1,81 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}
+  Coupons | ShopSphere
+{% endblock %}
+{% block admin_content %}
+  <div class="admin-heading">
+    <div>
+      <h1>Coupons & promotions</h1><p>Create discount codes and control their validity.</p>
+    </div>
+  </div>
+  <div class="row g-4">
+    <div class="col-xl-5">
+      <div class="admin-card">
+        <h5 class="fw-bold mb-1">Create coupon</h5><p class="text-muted small mb-4">Set discount, order minimum and validity dates.</p>
+        <form method="post" class="admin-form">
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="mb-3">
+              <label for="{{ field.id_for_label }}">
+                {{ field.label }}{% if field.field.required %}
+                  <span class="text-danger">*</span>
+                {% endif %}
+              </label>{{ field }}{% for error in field.errors %}
+                <div class="text-danger small">{{ error }}</div>
+              {% endfor %}
+            </div>
+          {% endfor %}<button class="btn btn-primary w-100"><i class="bi bi-plus-lg me-1"></i>Create coupon</button>
+        </form>
+      </div>
+    </div>
+    <div class="col-xl-7">
+      <div class="admin-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold mb-0">Existing coupons</h5><span class="badge-soft">{{ coupons.count }} total</span>
+        </div>
+        <div class="table-responsive">
+          <table class="table admin-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Discount</th>
+                <th>Usage</th>
+                <th>Validity</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for coupon in coupons %}
+                <tr>
+                  <td>
+                    <strong>{{ coupon.code }}</strong><div class="small text-muted">Min. ৳{{ coupon.minimum_order_amount }}</div>
+                  </td>
+                  <td>
+                    <span class="status-pill">{{ coupon.discount_percentage }}%</span>
+                  </td>
+                  <td>{{ coupon.used_count }} / {{ coupon.usage_limit|default:'∞' }}</td>
+                  <td>
+                    <small>{{ coupon.valid_from|date:'d M Y' }}<br />to {{ coupon.valid_until|date:'d M Y' }}</small>
+                  </td>
+                  <td>
+                    <form method="post" action="{% url 'dashboard:coupon_delete' coupon.pk %}" onsubmit="return confirm('Delete this coupon?')">
+                      {% csrf_token %}<button class="btn btn-sm btn-light border text-danger"><i class="bi bi-trash"></i></button>
+                    </form>
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="5">
+                    <div class="admin-empty">
+                      <i class="bi bi-ticket-perforated"></i>No coupons available.
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

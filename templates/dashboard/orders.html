@@ -1,0 +1,99 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Orders | ShopSphere{% endblock %}
+
+{% block admin_content %}
+<div class="admin-heading">
+    <div>
+        <h1>Order management</h1>
+        <p>Review customer purchases and track fulfillment.</p>
+    </div>
+</div>
+
+<div class="admin-card">
+    <!-- GET method -->
+    <form method="GET" class="admin-toolbar d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+        <div class="d-flex gap-2 flex-wrap align-items-center">
+            <div class="input-group" style="max-width:340px">
+                <input class="form-control" name="q" value="{{ query|default:'' }}" placeholder="Order ID, customer or phone">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
+            </div>
+            
+            <select class="form-select" name="status" style="width:auto" onchange="this.form.submit()">
+                <option value="">All statuses</option>
+                {% for value, label in statuses %}
+                    <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <span class="text-muted small">{{ page_obj.paginator.count }} orders</span>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table admin-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Order date</th>
+                    <th>Total</th>
+                    <th>Payment</th>
+                    <th>Order status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in page_obj %}
+                <tr>
+                    <td class="item-title">#{{ order.order_number }}</td>
+                    <td>
+                        <strong>{{ order.full_name }}</strong>
+                        <div class="small text-muted">{{ order.phone }}</div>
+                    </td>
+                    <td>{{ order.created_at|date:'d M Y, h:i A' }}</td>
+                    <td class="fw-bold">৳{{ order.total_amount|floatformat:2 }}</td>
+                    <td><span class="status-pill {{ order.payment_status|lower }}">{{ order.get_payment_status_display }}</span></td>
+                    <td><span class="status-pill {{ order.status|lower }}">{{ order.get_status_display }}</span></td>
+                    <td>
+                        <a class="btn btn-sm btn-light border" href="{% url 'dashboard:order_detail' order.order_number %}">
+                            View details <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7">
+                        <div class="admin-empty text-center py-4">
+                            <i class="bi bi-receipt d-block fs-3 text-muted"></i>
+                            No orders match your search.
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination Section -->
+    {% if page_obj.has_other_pages %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-end">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?{% if query %}q={{ query|urlencode }}&{% endif %}{% if selected_status %}status={{ selected_status|urlencode }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
+            
+            <li class="page-item disabled">
+                <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+            </li>
+            
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?{% if query %}q={{ query|urlencode }}&{% endif %}{% if selected_status %}status={{ selected_status|urlencode }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

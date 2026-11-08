@@ -1,0 +1,328 @@
+{% extends 'master/base.html' %}
+{% block extra_css %}
+  <style>
+    .admin-wrap {
+      background: #f5f7fc;
+      min-height: calc(100vh - 90px);
+      padding: 28px 0 56px;
+    }
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 245px minmax(0, 1fr);
+      gap: 24px;
+    }
+    .admin-side {
+      background: #111827;
+      border-radius: 22px;
+      padding: 22px 14px;
+      color: #cbd5e1;
+      height: fit-content;
+      position: sticky;
+      top: 100px;
+    }
+    .admin-brand {
+      font-size: 1.12rem;
+      font-weight: 850;
+      color: #fff;
+      padding: 0 12px 22px;
+      border-bottom: 1px solid #293345;
+    }
+    .admin-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #778399;
+      font-weight: 800;
+      padding: 20px 12px 8px;
+    }
+    .admin-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 12px;
+      border-radius: 12px;
+      color: #cbd5e1;
+      font-weight: 650;
+      margin: 3px 0;
+    }
+    .admin-link:hover,
+    .admin-link.active {
+      background: #312e81;
+      color: white;
+    }
+    .admin-link i {
+      font-size: 1.05rem;
+      width: 20px;
+    }
+    .admin-main {
+      min-width: 0;
+    }
+    .admin-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .admin-heading h1 {
+      font-weight: 850;
+      letter-spacing: -0.04em;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      margin: 0;
+    }
+    .admin-heading p {
+      color: #788397;
+      margin: 5px 0 0;
+    }
+    .admin-card {
+      background: #fff;
+      border: 1px solid #e8ecf3;
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 8px 28px rgba(20, 32, 60, 0.045);
+    }
+    .stat-card {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: white;
+      border: 1px solid #e8ecf3;
+      border-radius: 18px;
+      padding: 19px;
+      height: 100%;
+    }
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      font-size: 1.3rem;
+      background: #eef2ff;
+      color: #4f46e5;
+    }
+    .stat-card small {
+      color: #7b8495;
+      font-weight: 650;
+    }
+    .stat-card h3 {
+      font-size: 1.55rem;
+      font-weight: 850;
+      margin: 3px 0 0;
+    }
+    .admin-table {
+      vertical-align: middle;
+      margin: 0;
+    }
+    .admin-table thead th {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #7b8495;
+      border-bottom-color: #edf0f5;
+      padding: 13px 14px;
+      white-space: nowrap;
+    }
+    .admin-table td {
+      padding: 14px;
+      border-color: #f0f2f6;
+    }
+    .admin-table tbody tr:last-child td {
+      border-bottom: 0;
+    }
+    .admin-table .item-title {
+      font-weight: 750;
+      color: #202b3c;
+    }
+    .admin-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: 11px;
+      object-fit: cover;
+      background: #f1f3f8;
+    }
+    .status-pill {
+      display: inline-flex;
+      padding: 5px 10px;
+      border-radius: 30px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      background: #eef2ff;
+      color: #4f46e5;
+    }
+    .status-pill.paid,
+    .status-pill.delivered,
+    .status-pill.active {
+      background: #dcfce7;
+      color: #15803d;
+    }
+    .status-pill.cancelled,
+    .status-pill.failed {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+    .status-pill.shipped,
+    .status-pill.processing {
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+    .admin-form label {
+      font-size: 0.85rem;
+      font-weight: 750;
+      margin-bottom: 7px;
+    }
+    .admin-form input:not([type='checkbox']),
+    .admin-form select,
+    .admin-form textarea {
+      border: 1px solid #dfe4ec;
+      border-radius: 11px;
+      padding: 11px 13px;
+      width: 100%;
+      background: #fff;
+    }
+    .admin-form input[type='checkbox'] {
+      width: 18px;
+      height: 18px;
+    }
+    .admin-form p {
+      margin-bottom: 16px;
+    }
+    .admin-form .helptext,
+    .admin-form .help-text {
+      display: block;
+      color: #8992a2;
+      font-size: 0.76rem;
+    }
+    .admin-form .errorlist {
+      color: #dc2626;
+      font-size: 0.8rem;
+      list-style: none;
+      padding: 0;
+    }
+    .admin-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .admin-actions .btn {
+      padding: 7px 10px;
+      border-radius: 9px;
+    }
+    .admin-empty {
+      padding: 35px;
+      text-align: center;
+      color: #7b8495;
+    }
+    .admin-empty i {
+      font-size: 2rem;
+      display: block;
+      margin-bottom: 8px;
+      color: #a5afc0;
+    }
+    .admin-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .admin-toolbar .form-control,
+    .admin-toolbar .form-select {
+      border-radius: 11px;
+      min-height: 42px;
+    }
+    .order-product {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .order-product img {
+      width: 52px;
+      height: 52px;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #f1f3f8;
+    }
+    @media (max-width: 900px) {
+      .admin-layout {
+        grid-template-columns: 1fr;
+      }
+      .admin-side {
+        position: static;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 2px;
+      }
+      .admin-brand,
+      .admin-label {
+        grid-column: 1/-1;
+      }
+      .admin-side .admin-label {
+        padding-top: 12px;
+      }
+      .admin-link {
+        font-size: 0.86rem;
+        padding: 9px;
+      }
+      .admin-wrap {
+        padding-top: 16px;
+      }
+    }
+    @media (max-width: 520px) {
+      .admin-side {
+        grid-template-columns: 1fr 1fr;
+        padding: 13px;
+      }
+      .admin-brand {
+        padding-bottom: 14px;
+      }
+      .admin-link {
+        font-size: 0.78rem;
+        gap: 7px;
+      }
+      .admin-card {
+        padding: 15px;
+      }
+      .admin-heading {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+
+  <div class="admin-wrap">
+    <div class="container-fluid px-lg-4">
+      <div class="admin-layout">
+        <aside class="admin-side">
+          <div class="admin-brand">
+            <i class="bi bi-grid-1x2-fill me-2 text-info"></i>ShopSphere <span class="d-block small fw-normal mt-1" style="color:#8b98ad">ADMIN CONTROL PANEL</span>
+          </div>
+          <div class="admin-label">Overview</div>
+          <a class="admin-link" href="{% url 'dashboard:dashboard' %}"><i class="bi bi-speedometer2"></i>Dashboard</a>
+
+          <div class="admin-label">Store management</div>
+          <a class="admin-link" href="{% url 'dashboard:products' %}"><i class="bi bi-box-seam"></i>Products</a>
+          <a class="admin-link" href="{% url 'dashboard:categories' %}"><i class="bi bi-tags"></i>Categories</a>
+          <a class="admin-link" href="{% url 'dashboard:brands' %}"><i class="bi bi-award"></i>Brands</a>
+          <a class="admin-link" href="{% url 'dashboard:coupons' %}"><i class="bi bi-ticket-perforated"></i>Coupons</a>
+          
+          <div class="admin-label">Sales</div>
+          <a class="admin-link" href="{% url 'dashboard:orders' %}"><i class="bi bi-receipt"></i>All orders</a>
+
+          <div class="admin-label">Storefront</div>
+          <a class="admin-link" href="{% url 'products:home' %}"><i class="bi bi-shop"></i>View website</a>
+        </aside>
+
+        <section class="admin-main">
+          {% block admin_content %}
+          {% endblock %}
+        </section>
+        
+      </div>
+    </div>
+  </div>
+{% endblock %}

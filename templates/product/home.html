@@ -14,7 +14,7 @@
             <!-- Carousel Items -->
             <div class="carousel-inner">
               {% for trend in trends %}
-                <div class="carousel-item active">
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
                     <img src="{{trend.image_url}}"
                         class="d-block w-100"
                         alt="First slide">
@@ -26,20 +26,6 @@
                 </div>
               {% endfor %}
             </div>
-
-            <!-- Previous Button -->
-            <button class="carousel-control-prev" type="button"
-                    data-bs-target="#heroCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-
-            <!-- Next Button -->
-            <button class="carousel-control-next" type="button"
-                    data-bs-target="#heroCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
 
         </div>
     </div>

@@ -10,15 +10,16 @@
                 <li class="nav-item"><a class="nav-link" href="{% url 'products:product_list' %}">Shop</a></li>
 
                 {% if request.user.is_authenticated %}
-                    {% if request.user.username == 'superadmin' %}
+                    {% if request.user.is_staff or request.user.is_superuser %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Manage</a>
                         <ul class="dropdown-menu border-0 shadow rounded-4 p-2">
-                            <li><a class="dropdown-item rounded-3" href="{% url 'order:order_list' %}">Orders</a></li>
-                            <li><a class="dropdown-item rounded-3" href="{% url 'coupon:coupons' %}">Coupons</a></li>
-                            <li><a class="dropdown-item rounded-3" href="{% url 'products:product_category' %}">Categories</a></li>
-                            <li><a class="dropdown-item rounded-3" href="{% url 'products:product_brand' %}">Brands</a></li>
+                            <li><a class="dropdown-item rounded-3" href="{% url 'dashboard:orders' %}">All Orders</a></li>
+                            <li><a class="dropdown-item rounded-3" href="{% url 'dashboard:products' %}">Products</a></li>
+                            <li><a class="dropdown-item rounded-3" href="{% url 'dashboard:coupons' %}">Coupons</a></li>
+                            <li><a class="dropdown-item rounded-3" href="{% url 'dashboard:categories' %}">Categories</a></li>
+                            <li><a class="dropdown-item rounded-3" href="{% url 'dashboard:brands' %}">Brands</a></li>
                             <li><a class="dropdown-item rounded-3" href="{% url 'trends:trend' %}">Trends</a></li>
                         </ul>
                     </li>
@@ -42,7 +43,7 @@
                     <div class="dropdown">
                         <button class="nav-icon-btn" data-bs-toggle="dropdown" title="Account"><i class="bi bi-person"></i></button>
                         <ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-4 p-2">
-                            <li><h6 class="dropdown-header">Hi, </h6></li>
+                            <li><h6 class="dropdown-header">Hi, </h6>{{request.user.first_name}}</li>
                             <li><a class="dropdown-item rounded-3" href="{% url 'accounts:profile' %}"><i class="bi bi-person me-2"></i>Profile</a></li>
                             <li><a class="dropdown-item rounded-3" href="{% url 'order:order_list' %}"><i class="bi bi-receipt me-2"></i>My Orders</a></li>
                             <li><hr class="dropdown-divider"></li>

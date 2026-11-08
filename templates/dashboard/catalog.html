@@ -1,0 +1,99 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}
+  {{ list_title }} | ShopSphere
+{% endblock %}
+{% block admin_content %}
+  <div class="admin-heading">
+    <div>
+      <h1>{{ list_title }}</h1><p>Add, update and organize your store {{ list_title|lower }}.</p>
+    </div>
+  </div>
+
+    <div class="row g-4">
+        <div class="col-xl-4">
+            <div class="admin-card">
+                <h5 class="fw-bold mb-1">{{ page_title }}</h5><p class="text-muted small mb-4">Complete the form below.</p>
+                <form method="post" enctype="multipart/form-data" class="admin-form">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                        <label for="{{ field.id_for_label }}">
+                            {{ field.label }}{% if field.field.required %}
+                            <span class="text-danger">*</span>
+                            {% endif %}
+                        </label>{{ field }}{% if field.help_text %}
+                            <small class="text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                        </div>
+                    {% endfor %}
+                    <button class="btn btn-primary w-100">Save {{ list_title|lower|slice:':-1' }}</button>
+                    {% if form.instance.pk %}
+                        <a class="btn btn-light border w-100 mt-2" href="{% url list_url %}">Cancel edit</a>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+        
+        <div class="col-xl-8">
+            <div class="admin-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0">All {{ list_title }}</h5>
+                    <span class="badge-soft">{{ items.count }} total</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table admin-table">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Slug</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in items %}
+                            <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                {% if item.image %}
+                                    <img src="{{ item.image.url }}" class="admin-thumb" alt="" />
+                                {% elif item.logo %}
+                                    <img src="{{ item.logo.url }}" class="admin-thumb" alt="" />
+                                {% endif %}<span class="item-title">{{ item.name }}</span>
+                                </div>
+                            </td>
+                            <td class="text-muted">{{ item.slug }}</td>
+                            <td>
+                                {% if item.is_active %}
+                                <span class="status-pill active">Active</span>
+                                {% else %}
+                                <span class="status-pill cancelled">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="admin-actions">
+                                <a class="btn btn-light border" href="{% url edit_route item.pk %}"><i class="bi bi-pencil"></i></a><form method="post" action="{% url delete_route item.pk %}" onsubmit="return confirm('Delete this item?')">
+                                    {% csrf_token %}<button class="btn btn-light border text-danger"><i class="bi bi-trash"></i></button>
+                                </form>
+                                </div>
+                            </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                            <td colspan="4">
+                                <div class="admin-empty">
+                                <i class="bi bi-tags"></i>No {{ list_title|lower }} created yet.
+                                </div>
+                            </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

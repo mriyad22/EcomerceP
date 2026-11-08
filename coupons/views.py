@@ -71,7 +71,7 @@ def add_coupon(request):
     
     coupon = CouponModel.objects.all()
     coupon_form = CouponForm(request.POST or None)
-    if request.method == 'POST' and coupon_form.is_valid:
+    if request.method == 'POST' and coupon_form.is_valid():
         coupon_form.save()
         messages.success(request, 'Coupon created.')
         return redirect('coupon:coupons')
