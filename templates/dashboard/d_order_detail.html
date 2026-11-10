@@ -32,7 +32,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for item in order.order_items.all %}
+                        {% for item in order_items %}
                         <tr>
                             <td>
                                 <div class="order-product d-flex align-items-center gap-3">
@@ -81,12 +81,14 @@
             </div>
         </div>
 
+        {% if request.user.is_superuser %}
         <!-- Update Form Section -->
         <div class="admin-card">
             <h5 class="fw-bold mb-3">Update order status</h5>
             <form method="POST" class="admin-form">
                 {% csrf_token %}
                 <div class="row g-3">
+
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Order status</label>
                         <select name="status" class="form-select">
@@ -95,6 +97,7 @@
                             {% endfor %}
                         </select>
                     </div>
+
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Payment status</label>
                         <select name="payment_status" class="form-select">
@@ -109,6 +112,7 @@
                 </button>
             </form>
         </div>
+        {% endif %}
     </div>
 
     <!-- Right Column: Customer & Payment Info -->

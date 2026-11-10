@@ -24,7 +24,8 @@
           {% csrf_token %}
           <input type="hidden" name="action" value="product" />
           {{ product_data | crispy }}
-          <button class="btn btn-primary mt-2">{{product_btn}}</button>
+          <button class="btn btn-primary mt-2">Save product</button>
+          <a href="{% url 'dashboard:products' %}" class="btn btn-light border">Cancel</a>
         </form>
       </div>
 
@@ -39,6 +40,7 @@
                 <input type="hidden" name="action" value="image" />
                 {{ image_data | crispy }}
                 <button class="btn btn-light border">Add image</button>
+                <a href="{% url 'dashboard:products' %}" class="btn btn-light border">Cancel</a>
               </form>
             </div>
           </div>
@@ -50,6 +52,7 @@
                 <input type="hidden" name="action" value="variant" />
                 {{ variant_data | crispy }}
                 <button class="btn btn-light border">Add variant</button>
+                <a href="{% url 'dashboard:products' %}" class="btn btn-light border">Cancel</a>
               </form>
             </div>
           </div>
