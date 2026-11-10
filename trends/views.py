@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.views.decorators.http import require_POST
+
 from .forms import *
 from .models import TrendStuffModel
 
@@ -44,22 +46,14 @@ def edit_trend_stuff(request, edit_id):
 
 
 #--------> Trend delete View
+@require_POST
 def delete_trend(request, delete_id):
-    if not request.user.username == 'superadmin':
+    if not request.user.is_superuser:
         messages.warning(request, "You don't have permission here")
         return redirect('products:home')
     
-    delete_brand = get_object_or_404(TrendStuffModel, id = delete_id)
-    if request.method == 'POST':
-        delete_brand.delete()
-        messages.success(request, 'Trend deleted.')
-        return redirect('trends:trend')
-    
-    context = {
-        'title' : 'trend delete',
-        'object' : delete_brand,
-        'trend_pate' : True
-    }
-    return render(request, 'delete.html', context)
+    delete_brand = get_object_or_404(TrendStuffModel, id = delete_id).delete()
+    messages.success(request, 'Trend deleted.')
+    return redirect('trends:trend')
 
     
