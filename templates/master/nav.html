@@ -12,17 +12,7 @@
                 {% if request.user.is_authenticated %}
                     {% if request.user.is_staff or request.user.is_superuser %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Manage</a>
-                        <ul class="dropdown-menu border-0 shadow rounded-4 p-2">
-                            <li><a class="dropdown-item rounded-3" href="{% url 'dashboard:orders' %}">All Orders</a></li>
-                            <li><a class="dropdown-item rounded-3" href="{% url 'dashboard:products' %}">Products</a></li>
-                            <li><a class="dropdown-item rounded-3" href="{% url 'dashboard:coupons' %}">Coupons</a></li>
-                            <li><a class="dropdown-item rounded-3" href="{% url 'dashboard:categories' %}">Categories</a></li>
-                            <li><a class="dropdown-item rounded-3" href="{% url 'dashboard:brands' %}">Brands</a></li>
-                            <li><a class="dropdown-item rounded-3" href="{% url 'trends:trend' %}">Trends</a></li>
-                        </ul>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'trends:trend' %}">Trends</a></li>
                     {% endif %}
                     
                     {% if not request.user.is_customer %}  
