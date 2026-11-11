@@ -6,7 +6,11 @@ from .forms import *
 from .models import TrendStuffModel
 
 
-def create_trend_stuff(request):
+def create_trend(request):
+    if not request.user.is_superuser:
+        messages.warning(request, "You don't have permission here")
+        return redirect('products:home')
+    
     trends = TrendStuffModel.objects.all().order_by('-created_at')
     form_data = TrendStuffForm(request.POST or None)
     if request.method == 'POST' and form_data.is_valid():
@@ -26,7 +30,11 @@ def create_trend_stuff(request):
 
 
 #--------> Trends Edit View
-def edit_trend_stuff(request, edit_id):
+def edit_trend(request, edit_id):
+    if not request.user.is_superuser:
+        messages.warning(request, "You don't have permission here")
+        return redirect('products:home')
+    
     trend_id = get_object_or_404(TrendStuffModel, id = edit_id)
     
     form_data = TrendStuffForm(request.POST or None, instance=trend_id)
@@ -56,4 +64,3 @@ def delete_trend(request, delete_id):
     messages.success(request, 'Trend deleted.')
     return redirect('trends:trend')
 
-    

@@ -304,6 +304,7 @@ def order_list(request):
     valid_statuses = {value for value, label in OrderModel.OrderStatus.choices}
     if status in valid_statuses:
         qs = qs.filter(status=status)
+        
     page_obj = Paginator(qs, 15).get_page(request.GET.get('page'))
 
     context = {
@@ -385,4 +386,4 @@ def order_detail(request, order_number):
         'payment_statuses': OrderModel.PaymentStatus.choices,
         'is_admin': request.user.is_superuser,
     }
-    return render(request, 'dashboard/d_order_detail.html', context)
+    return render(request, 'dashboard/order_detail.html', context)

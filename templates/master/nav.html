@@ -9,14 +9,10 @@
                 <li class="nav-item"><a class="nav-link" href="{% url 'products:home' %}">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'products:product_list' %}">Shop</a></li>
 
-                {% if request.user.is_authenticated %}
-                    {% if request.user.is_staff or request.user.is_superuser %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
+                {% if request.user.is_authenticated and request.user.is_staff  %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
+                    {% if request.user.is_superuser %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'trends:trend' %}">Trends</a></li>
-                    {% endif %}
-                    
-                    {% if not request.user.is_customer %}  
-                        <li class="nav-item"><a class="nav-link" href="{% url 'products:product_create' %}">Add Product</a></li>
                     {% endif %}
                 {% endif %}
             </ul>
@@ -33,7 +29,7 @@
                     <div class="dropdown">
                         <button class="nav-icon-btn" data-bs-toggle="dropdown" title="Account"><i class="bi bi-person"></i></button>
                         <ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-4 p-2">
-                            <li><h6 class="dropdown-header">Hi, </h6>{{request.user.first_name}}</li>
+                            <li><h6 class="dropdown-header">Hi, </h6> <strong>{{request.user.first_name}} {{request.user.last_name}}</strong></li>
                             <li><a class="dropdown-item rounded-3" href="{% url 'accounts:profile' %}"><i class="bi bi-person me-2"></i>Profile</a></li>
                             <li><a class="dropdown-item rounded-3" href="{% url 'order:order_list' %}"><i class="bi bi-receipt me-2"></i>My Orders</a></li>
                             <li><hr class="dropdown-divider"></li>

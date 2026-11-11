@@ -6,6 +6,7 @@ from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from types import SimpleNamespace
+from django.core.paginator import Paginator
 import uuid
 
 
@@ -169,8 +170,12 @@ def checkout_view(request):
 def order_list(request):
     orders = OrderModel.objects.filter(user=request.user).order_by('-created_at')
 
+    page_obj = Paginator(orders, 10).get_page(request.GET.get('page'))
+
+    print(page_obj)
+
     con = {
-        'orders' : orders
+        'page_obj' : page_obj
     }
     return render(request, 'order/order_list.html', con)
 
@@ -181,7 +186,7 @@ def order_list(request):
 @login_required
 def order_detail(request, order_number):
     order = get_object_or_404(
-        OrderModel.objects.prefetch_related('order_items'),
+        OrderModel.objects.prefetch_related('order_items', 'order_items__product'),
         order_number = order_number,
         user = request.user
     )
