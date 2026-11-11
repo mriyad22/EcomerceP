@@ -299,7 +299,13 @@
       <div class="admin-layout">
         <aside class="admin-side">
           <div class="admin-brand">
+            
+            {% if request.user.is_superuser %}
             <i class="bi bi-grid-1x2-fill me-2 text-info"></i>ShopSphere <span class="d-block small fw-normal mt-1" style="color:#8b98ad">ADMIN CONTROL PANEL</span>
+            {% elif request.user.is_staff %}
+            <i class="bi bi-grid-1x2-fill me-2 text-info"></i>ShopSphere <span class="d-block small fw-normal mt-1" style="color:#8b98ad">SELLER CONTROL PANEL</span>
+
+            {% endif %}
           </div>
           <div class="admin-label">Overview</div>
           <a class="admin-link" href="{% url 'dashboard:dashboard' %}"><i class="bi bi-speedometer2"></i>Dashboard</a>
