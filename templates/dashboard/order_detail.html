@@ -1,0 +1,172 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Order #{{ order.order_number }} | ShopSphere{% endblock %}
+
+{% block admin_content %}
+<div class="admin-heading d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <div>
+        <h1>Order #{{ order.order_number }}</h1>
+        <p class="text-muted mb-0">Placed on {{ order.created_at|date:'d F Y, h:i A' }}</p>
+    </div>
+    <a href="{% url 'dashboard:orders' %}" class="btn btn-light border">
+        <i class="bi bi-arrow-left me-1"></i> All orders
+    </a>
+</div>
+
+<div class="row g-4">
+    <!-- Left Column: Items and Update Form -->
+    <div class="col-xl-8">
+        <div class="admin-card mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0">Items in this order</h5>
+                <span class="badge-soft">{{ order.order_items.count }} items</span>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table admin-table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Unit price</th>
+                            <th>Qty</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order_items %}
+                        <tr>
+                            <td>
+                                <div class="order-product d-flex align-items-center gap-3">
+                                    {% if item.product and item.product.image %}
+                                        <img src="{{ item.product.image.url }}" alt="{{ item.product_name }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;">
+                                    {% else %}
+                                        <div class="admin-thumb bg-light border rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                            <i class="bi bi-image text-muted"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        <strong class="d-block">{{ item.product_name }}</strong>
+                                        {% if item.variant %}
+                                            <div class="small text-muted">{{ item.variant.name }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                            <td>৳{{ item.price|floatformat:2 }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td class="fw-bold">৳{{ item.total_price|floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Price Breakdown -->
+            <div class="ms-auto mt-3" style="max-width:330px">
+                <div class="d-flex justify-content-between py-2">
+                    <span class="text-muted">Subtotal</span>
+                    <span>৳{{ order.subtotal|floatformat:2 }}</span>
+                </div>
+                <div class="d-flex justify-content-between py-2">
+                    <span class="text-muted">Shipping</span>
+                    <span>৳{{ order.shipping_cost|floatformat:2 }}</span>
+                </div>
+                <div class="d-flex justify-content-between py-2">
+                    <span class="text-muted">Discount</span>
+                    <span class="text-success">− ৳{{ order.discount|floatformat:2 }}</span>
+                </div>
+                <div class="d-flex justify-content-between border-top pt-3 mt-2">
+                    <strong>Grand total</strong>
+                    <strong class="fs-5 text-primary">৳{{ order.total_amount|floatformat:2 }}</strong>
+                </div>
+            </div>
+        </div>
+
+        {% if request.user.is_superuser %}
+        <!-- Update Form Section -->
+        <div class="admin-card">
+            <h5 class="fw-bold mb-3">Update order status</h5>
+            <form method="POST" class="admin-form">
+                {% csrf_token %}
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Order status</label>
+                        <select name="status" class="form-select">
+                            {% for value, label in order_statuses %}
+                                <option value="{{ value }}" {% if order.status == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Payment status</label>
+                        <select name="payment_status" class="form-select">
+                            {% for value, label in payment_statuses %}
+                                <option value="{{ value }}" {% if order.payment_status == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">
+                    <i class="bi bi-check2-circle me-1"></i> Update order
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Right Column: Customer & Payment Info -->
+    <div class="col-xl-4">
+        <div class="admin-card mb-4">
+            <h5 class="fw-bold mb-3">Customer information</h5>
+            <div class="mb-3">
+                <small class="text-muted d-block">Full name</small>
+                <div class="fw-semibold">{{ order.full_name }}</div>
+            </div>
+            <div class="mb-3">
+                <small class="text-muted d-block">Phone</small>
+                <div class="fw-semibold">{{ order.phone }}</div>
+            </div>
+            <div class="mb-3">
+                <small class="text-muted d-block">Account</small>
+                <div class="fw-semibold">
+                    {% if order.user %}
+                        <i class="bi bi-person me-1"></i>{{ order.user.username }}
+                    {% else %}
+                        <span class="text-muted">Guest / deleted user</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div>
+                <small class="text-muted d-block">Delivery address</small>
+                <div class="fw-semibold">
+                    {{ order.address|linebreaksbr }}<br>
+                    <span class="text-secondary">{{ order.city }}, {{ order.country }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment status info-->
+        <div class="admin-card">
+            <h5 class="fw-bold mb-3">Payment & promotion</h5>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Payment status</span>
+                <span class="status-pill {{ order.payment_status|lower }}">{{ order.get_payment_status_display }}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Order status</span>
+                <span class="status-pill {{ order.status|lower }}">{{ order.get_status_display }}</span>
+            </div>
+
+            {% if order.coupon %}
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted">Coupon</span>
+                <strong>
+                    <span class="badge bg-success-soft text-success">{{ order.coupon.code }}</span>
+                </strong>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
