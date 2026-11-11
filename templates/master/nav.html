@@ -17,6 +17,7 @@
                 {% endif %}
             </ul>
 
+            <!-- Search Form-->
             <form class="d-flex nav-search me-lg-3 mb-3 mb-lg-0" action="{% url 'products:product_list' %}">
                 <input class="form-control" name="q" value="{{ query|default:'' }}" placeholder="Search products..." aria-label="Search products">
                 <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
