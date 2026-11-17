@@ -106,7 +106,9 @@ def product_list(request):
         'query' : query,
         'selected_category' : category,
         'selected_sort' : sort,
-        'page_obj' : page_obj
+        'page_obj' : page_obj, 
+        'cart_page' : True,
+        'wishlist_page' : True
     }
     return render(request, 'product/product_list.html', con)
 
@@ -115,12 +117,19 @@ def product_list(request):
 #--------> Product detail view
 def product_detail(request, slug):
     product = get_object_or_404(
-        ProductModel.objects.select_related('category', 'brand').prefetch_related('product_images', 'product_variants', 'product_reviews__user'),
+        ProductModel.objects.select_related(
+            'category', 
+            'brand'
+        ).prefetch_related('product_images', 'product_variants', 'product_reviews__user'),
         slug = slug,
         is_available = True
     )
 
+
+    relevant_products = ProductModel.objects.filter(category=product.category, is_available=True).exclude(slug=product.slug).select_related('category')[:12]
+
     con = {
-        'product' : product
+        'product' : product,
+        'relevants' : relevant_products
     }
     return render(request, 'product/product_detail.html', con)

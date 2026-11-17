@@ -103,7 +103,7 @@
             {% comment %} Add Wishlist template {% endcomment %} 
             <form method="post" action="{% url 'wishlist:toggle' product.id %}" class="mt-2">
               {% csrf_token %}
-              <button type="submit" class="btn btn-light border" title="Add/remove wishlist"><i class="bi bi-heart me-1"></i> Add to wishlist</button>
+              <button type="submit" class="btn btn-light border" title="Add to wishlist"><i class="bi bi-heart me-1"></i> Add to wishlist</button>
             </form>
 
           {% elif not user.is_authenticated %}
@@ -122,6 +122,7 @@
             <span class="eyebrow">Customer feedback</span><h3 class="section-title">Reviews</h3>
           </div>
         </div>
+
         <div class="row g-3">
           {% for review in product.product_reviews.all %}
             <div class="col-md-6">
@@ -176,5 +177,27 @@
         {% endif %}
       </div>
     </div>
+
+    {% comment %} Relevant products page {% endcomment %}
+    <section class="section-sm">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+          <div>
+            <h3 class="section-title mt-1 mb-0">Relevant products</h3>
+          </div>
+        </div>
+          <div class="form-card mt-4">
+            <div class="row g-4">
+              {% for product in relevants %}
+                {% include 'product/product_card.html' with product=product %}
+              {% empty %}
+                <div class="col-12">
+                  <div class="empty-state">No relevant products yet.</div>
+                </div>
+              {% endfor %}
+            </div>
+        </div>
+      </div>
+    </section>
   </section>
 {% endblock %}

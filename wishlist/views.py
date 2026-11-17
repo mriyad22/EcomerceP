@@ -14,7 +14,8 @@ def wishlist_detail(request):
     wishlist, _ = WishlistModel.objects.get_or_create(user=request.user)
 
     con = {
-        'wishlist' : wishlist
+        'wishlist' : wishlist,
+        'cart_page' : True
     }
     return render(request, 'wishlist/wishlist_detail.html', con)
 
