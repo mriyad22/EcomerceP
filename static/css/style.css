@@ -347,7 +347,7 @@ a {
 .product-card {
   height: 100%;
   overflow: hidden;
-  background: #eaf5fc;
+  background: #f3f4f5;
   border: 1px solid var(--border);
   border-radius: 20px;
   transition: 0.25s ease;
