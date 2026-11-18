@@ -1,124 +1,169 @@
 {% extends 'master/base.html' %}
+{% load static %}
 {% block title %}
-  ShopSphere | Modern Online Shopping
+  ShopSphere | Discover better everyday shopping
 {% endblock %}
 {% block content %}
-
-  <section class="hero">
+  <section class="emox-hero-wrap">
     <div class="container">
-
-        <div id="heroCarousel" class="carousel slide"
-             data-bs-ride="carousel"
-             data-bs-interval="4000">
-
-            <!-- Carousel Items -->
-            <div class="carousel-inner">
-              {% for trend in trends %}
-                <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                    <img src="{{trend.image_url}}"
-                        class="d-block w-100"
-                        alt="First slide">
-
-                    <div class="carousel-caption">
-                        <h5>{{trend.heading}}</h5>
-                        <p>{{trend.summary}}</p>
-                    </div>
-                </div>
-              {% endfor %}
-            </div>
-
-        </div>
-    </div>
-
-  </section>
-
-  
-  {% comment %} Category in home page {% endcomment %}
-  <section class="section-sm" id="categories">
-    <div class="container">
-      <div class="d-flex justify-content-between align-items-end mb-4">
-        <div>
-          <span class="eyebrow">Explore</span><p class="section-title mt-1 mb-0">Shop by category</p>
-        </div><a href="{% url 'products:product_list' %}" class="fw-bold text-primary">View all <i class="bi bi-arrow-right"></i></a>
+      <div class="emox-hero-grid">
+        {% for trend in trends %}
+          <a class="emox-hero-card" href="{% url 'products:product_list' %}">
+            <img src="{{ trend.image_url }}" alt="{{ trend.heading }}" />
+            <span class="emox-hero-shade"></span>
+            <span class="emox-hero-copy">
+              <strong>{{ trend.heading }}</strong>
+              <span>{{ trend.summary|truncatechars:105 }}</span>
+              <b>Shop now <i class="bi bi-arrow-up-right"></i></b>
+            </span>
+          </a>
+        {% empty %}
+          <a class="emox-hero-card emox-hero-main emox-hero-fallback" href="{% url 'products:product_list' %}">
+            <span class="emox-hero-copy"><small>WELCOME TO SHOPSPHERE</small>
+              <strong>Find something you'll love.</strong><span>Discover great products at prices you'll love.</span>
+              <b>Explore products <i class="bi bi-arrow-up-right"></i></b>
+            </span>
+          </a>
+        {% endfor %}
+        
+         <a class="emox-hero-card {% if forloop.first %}
+              emox-hero-main
+            {% else %}
+              emox-hero-side
+            {% endif %}"
+            href="{% url 'products:product_list' %}">
+            <img src="{{ trend.image_url }}" alt="{{ trend.heading }}" />
+            <span class="emox-hero-shade"></span>
+            <span class="emox-hero-copy">
+              <small>
+                {% if forloop.first %}
+                  DISCOVER THE COLLECTION
+                {% else %}
+                  LIMITED TIME OFFER
+                {% endif %}
+              </small>
+              <strong>{{ trend.heading }}</strong>
+              <span>{{ trend.summary|truncatechars:105 }}</span>
+              <b>Shop now <i class="bi bi-arrow-up-right"></i></b>
+            </span>
+          </a>
       </div>
-      
-      <div class="row g-2">
-  {% for category in categories %}
-    <div class="col-6 col-md-4 col-lg-2">
-      <a class="category-card d-block h-100"
-         href="{% url 'products:product_list' %}?categoryx={{ category.slug }}">
 
-        {% if category.image %}
-          <img
-            src="{{ category.image.url }}"
-            alt="{{ category.name }}"
-            class="w-100"
-            style="height: 75px; object-fit: cover;"
-          />
-        {% else %}
-          <div class="category-placeholder" style="height: 75px;">
-            <i class="bi bi-grid"></i>
-          </div>
-        {% endif %}
-
-        <div class="p-2">
-          <strong class="d-block" style="font-size: 13px;">
-            {{ category.name }}
-          </strong>
-          <div class="small text-muted mt-1" style="font-size: 10px;">
-            Explore <i class="bi bi-arrow-up-right"></i>
-          </div>
-        </div>
-
-      </a>
-    </div>
-  {% empty %}
-    <div class="col-12">
-      <div class="empty-state">No categories yet.</div>
-    </div>
-  {% endfor %}
-</div>
+      <div class="emox-trust-row">
+        <span><i class="bi bi-truck"></i> Reliable delivery</span>
+          <span><i class="bi bi-shield-check"></i> Secure checkout</span>
+          <span><i class="bi bi-arrow-repeat"></i> Easy order tracking</span>
+          <span><i class="bi bi-headset"></i> Helpful support</span>
+      </div>
     </div>
   </section>
 
-  {% comment %} Featured products in home page {% endcomment %}
-  <section class="section-sm">
+  <section class="emox-section" id="categories">
     <div class="container">
-      <div class="d-flex justify-content-between align-items-end mb-4">
+      <div class="emox-section-head">
         <div>
-          <span class="eyebrow">Editor’s picks</span><h2 class="section-title mt-1 mb-0">Featured products</h2>
-        </div><a href="{% url 'products:product_list' %}" class="fw-bold text-primary">Shop all <i class="bi bi-arrow-right"></i></a>
+          <span class="emox-kicker">Find your favorites</span><h2>Explore popular categories</h2>
+        </div><a href="{% url 'products:product_list' %}">View all <i class="bi bi-arrow-right"></i></a>
       </div>
-      <div class="row g-4">
+      <div class="emox-category-grid">
+        {% for category in categories %}
+          <a class="emox-category" href="{% url 'products:product_list' %}?categoryx={{ category.slug }}">
+            <span class="emox-category-image">
+              {% if category.image %}
+                <img src="{{ category.image.url }}" alt="{{ category.name }}" />
+              {% else %}
+                <i class="bi bi-grid"></i>
+              {% endif %}
+            </span>
+            <strong>{{ category.name }}</strong>
+          </a>
+        {% empty %}
+          <p class="text-muted">Categories will appear here when added.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="emox-section emox-soft-section">
+    <div class="container">
+      <div class="emox-section-head">
+        <div>
+          <span class="emox-kicker">Handpicked for you</span><h2>Today's best deals</h2>
+        </div><a href="{% url 'products:product_list' %}">View all <i class="bi bi-arrow-right"></i></a>
+      </div>
+      <div class="row g-3 g-lg-4">
         {% for product in featured %}
-          {% include 'product/product_card.html' with product=product %}
+          {% include 'product/product_card.html' with product=product cart_page=True wishlist_page=True %}
         {% empty %}
           <div class="col-12">
-            <div class="empty-state">No featured products yet.</div>
+            <div class="empty-state">Featured products will appear here.</div>
           </div>
         {% endfor %}
       </div>
     </div>
   </section>
 
-  {% comment %} Latest products in home page {% endcomment %}
-  <section class="section-sm">
-    <div class="container">
-      <div class="d-flex justify-content-between align-items-end mb-4">
-        <div>
-          <span class="eyebrow">Just arrived</span><h2 class="section-title mt-1 mb-0">Latest products</h2>
+  {% if trends|length > 2 %}
+    <section class="emox-promo-section">
+      <div class="container">
+        <div class="emox-promo-grid">
+          {% for trend in trends|slice:'2:5' %}
+            <a class="emox-promo-card" href="{% url 'products:product_list' %}">
+              <img src="{{ trend.image_url }}" alt="{{ trend.heading }}" />
+              <span>
+                <small>SHOPSPHERE PICKS</small>
+                <strong>{{ trend.heading }}</strong><b>Shop now <i class="bi bi-arrow-up-right"></i></b>
+              </span>
+            </a>
+          {% endfor %}
         </div>
       </div>
-      <div class="row g-4">
+    </section>
+  {% endif %}
+
+  <section class="emox-section">
+    <div class="container">
+      <div class="emox-section-head">
+        <div>
+          <span class="emox-kicker">Fresh from the store</span><h2>Latest arrivals</h2>
+        </div><a href="{% url 'products:product_list' %}">Shop all <i class="bi bi-arrow-right"></i></a>
+      </div>
+      <div class="row g-3 g-lg-4">
         {% for product in latest %}
-          {% include 'product/product_card.html' with product=product %}
+          {% include 'product/product_card.html' with product=product cart_page=True wishlist_page=True %}
         {% empty %}
           <div class="col-12">
-            <div class="empty-state">No products yet.</div>
+            <div class="empty-state">New products are coming soon.</div>
           </div>
         {% endfor %}
       </div>
     </div>
   </section>
-  
+
+  <section class="emox-benefits">
+    <div class="container">
+      <div class="row g-3">
+        <div class="col-6 col-lg-3">
+          <div>
+            <i class="bi bi-box-seam"></i><strong>Free & easy returns</strong><small>Shop with confidence</small>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div>
+            <i class="bi bi-truck"></i><strong>Fast delivery</strong><small>To your doorstep</small>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div>
+            <i class="bi bi-credit-card"></i><strong>Flexible payment</strong><small>Convenient checkout</small>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div>
+            <i class="bi bi-chat-dots"></i><strong>Customer support</strong><small>We're here to help</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 {% endblock %}

@@ -1,30 +1,29 @@
 <footer class="site-footer">
   <div class="container py-5">
     <div class="row g-4">
-      <div class="col-lg-5">
-        <div class="footer-brand mb-2">
+      <div class="col-lg-4">
+        <div class="footer-brand">
           <i class="bi bi-bag-heart-fill me-2"></i>ShopSphere
         </div>
-        <p class="mb-0">A clean, modern Django shopping experience for discovering products, managing carts and placing orders.</p>
+        <p class="footer-description">Thoughtful finds for every part of your day. Discover products you'll love, all in one place.</p>
       </div>
-
       <div class="col-6 col-lg-2">
-        <h6 class="text-white">Shop</h6>
-        <a class="d-block mb-2" href="{% url 'products:product_list' %}">All products</a>
-        <a class="d-block" href="{% url 'wishlist:wishlist_detail' %}">Wishlist</a>
+        <h6>Explore</h6><a href="{% url 'products:product_list' %}">All products</a><a href="{% url 'products:home' %}#categories">Categories</a><a href="{% url 'wishlist:wishlist_detail' %}">Wishlist</a>
       </div>
-
       <div class="col-6 col-lg-2">
-        <h6 class="text-white">Account</h6>
-        <a class="d-block mb-2" href="{% url 'accounts:profile' %}">Profile</a>
-        <a class="d-block" href="{% url 'order:order_list' %}">Orders</a>
+        <h6>Your account</h6><a href="{% url 'accounts:profile' %}">My profile</a><a href="{% url 'order:order_list' %}">My orders</a><a href="{% url 'cart:cart_detail' %}">Shopping bag</a>
+      </div>
+      <div class="col-lg-4">
+        <h6>Stay in the loop</h6><p class="footer-description">Follow the latest arrivals and offers from ShopSphere.</p>
+        <div class="footer-social">
+          <span><i class="bi bi-facebook"></i></span><span><i class="bi bi-instagram"></i></span><span><i class="bi bi-whatsapp"></i></span>
+        </div>
       </div>
     </div>
   </div>
-
   <div class="footer-bottom">
     <div class="container d-flex justify-content-between flex-wrap gap-2">
-      <span>© 2026 ShopSphere</span><span>Built with Django & Bootstrap by @mriyad22</span>
+      <span>© 2026 ShopSphere. All rights reserved.</span><span>Made for better everyday shopping.</span>
     </div>
   </div>
 </footer>

@@ -1,52 +1,66 @@
-<nav class="navbar navbar-expand-lg site-nav sticky-top py-3">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'products:home' %}">
-            <span class="brand-mark"><i class="bi bi-bag-heart-fill"></i></span><span>ShopSphere</span>
-        </a>
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"><i class="bi bi-list fs-2"></i></button>
-        <div class="collapse navbar-collapse" id="navMenu">
-            <ul class="navbar-nav mx-lg-4 me-auto">
-                <li class="nav-item"><a class="nav-link" href="{% url 'products:home' %}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'products:product_list' %}">Shop</a></li>
+<div class="emox-topline">
+  <div class="container">
+    <span>Welcome to ShopSphere — everyday finds, made simple.</span><span><i class="bi bi-geo-alt"></i> Delivering across Bangladesh <b>BDT ৳</b></span>
+  </div>
+</div>
+<nav class="navbar navbar-expand-lg site-nav sticky-top">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'products:home' %}"><span class="brand-mark"><i class="bi bi-bag-heart-fill"></i></span><span>shop<span class="brand-accent">sphere</span></span></a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"><i class="bi bi-list fs-2"></i></button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav mx-lg-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'products:home' %}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'products:product_list' %}">Shop</a>
+        </li>
+        {% if request.user.is_authenticated and request.user.is_staff %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard:dashboard' %}">Dashboard</a>
+          </li>
+          {% if request.user.is_superuser %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'trends:trend' %}">Trends</a>
+            </li>
+          {% endif %}
+        {% endif %}
+      </ul>
 
-                {% if request.user.is_authenticated and request.user.is_staff  %}
-                <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
-                    {% if request.user.is_superuser %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'trends:trend' %}">Trends</a></li>
-                    {% endif %}
-                {% endif %}
+      <form class="d-flex nav-search me-lg-3 mb-3 mb-lg-0" action="{% url 'products:product_list' %}">
+        <input class="form-control" name="q" value="{{ query|default:'' }}" placeholder="Search for products, brands..." aria-label="Search products" />
+        <button type="submit" aria-label="Search"><i class="bi bi-search"></i></button>
+      </form>
+
+      <div class="d-flex align-items-center gap-2 emox-nav-actions">
+        {% if user.is_authenticated %}
+          <a class="nav-icon-btn" href="{% url 'wishlist:wishlist_detail' %}" title="Wishlist"><i class="bi bi-heart"></i></a>
+          <a class="nav-icon-btn" href="{% url 'cart:cart_detail' %}" title="Cart"><i class="bi bi-bag"></i></a>
+          <div class="dropdown">
+            <button class="nav-icon-btn" data-bs-toggle="dropdown" title="Account"><i class="bi bi-person"></i></button><ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-4 p-2">
+              <li>
+                <h6 class="dropdown-header">Hello, {{ request.user.first_name|default:request.user.username }}</h6>
+              </li>
+              <li>
+                <a class="dropdown-item rounded-3" href="{% url 'accounts:profile' %}">Profile</a>
+              </li>
+              <li>
+                <a class="dropdown-item rounded-3" href="{% url 'order:order_list' %}">My Orders</a>
+              </li>
+              <li>
+                <hr class="dropdown-divider" />
+              </li>
+              <li>
+                <form method="post" action="{% url 'accounts:logout' %}">
+                  {% csrf_token %}<button class="dropdown-item text-danger" type="submit">Logout</button>
+                </form>
+              </li>
             </ul>
-
-            <!-- Search Form-->
-            <form class="d-flex nav-search me-lg-3 mb-3 mb-lg-0" action="{% url 'products:product_list' %}">
-                <input class="form-control" name="q" value="{{ query|default:'' }}" placeholder="Search products..." aria-label="Search products">
-                <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
-            </form>
-
-            <div class="d-flex align-items-center gap-2">
-                {% if user.is_authenticated %}
-                    <a class="nav-icon-btn position-relative" href="{% url 'wishlist:wishlist_detail' %}" title="Wishlist"><i class="bi bi-heart"></i></a>
-                    <a class="nav-icon-btn position-relative" href="{% url 'cart:cart_detail'  %}" title="Cart"><i class="bi bi-bag"></i></a>
-                    <div class="dropdown">
-                        <button class="nav-icon-btn" data-bs-toggle="dropdown" title="Account"><i class="bi bi-person"></i></button>
-                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-4 p-2">
-                            <li><h6 class="dropdown-header">Hi, </h6> <strong>{{request.user.first_name}} {{request.user.last_name}}</strong></li>
-                            <li><a class="dropdown-item rounded-3" href="{% url 'accounts:profile' %}"><i class="bi bi-person me-2"></i>Profile</a></li>
-                            <li><a class="dropdown-item rounded-3" href="{% url 'order:order_list' %}"><i class="bi bi-receipt me-2"></i>My Orders</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form method="post" action="{% url 'accounts:logout' %}">
-                                    {% csrf_token %}
-                                    <button class="dropdown-item rounded-3 text-danger" type="submit"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                {% else %}
-                    <a class="btn btn-light border" href="{% url 'accounts:login' %}">Login</a>
-                    <a class="btn btn-primary" href="{% url 'accounts:register' %}">Create account</a>
-                {% endif %}
-            </div>
-        </div>
+          </div>
+        {% else %}
+          <a class="nav-login" href="{% url 'accounts:login' %}">Sign in</a><a class="btn btn-primary btn-sm" href="{% url 'accounts:register' %}">Join now</a>
+        {% endif %}
+      </div>
     </div>
+  </div>
 </nav>

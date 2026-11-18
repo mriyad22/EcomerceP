@@ -19,13 +19,13 @@ def home(request):
     if request.user.is_authenticated:
         if not request.user.is_customer:
             featured = ProductModel.objects.filter(is_featured=True, is_available=True, product_owner=request.user).select_related('category', 'brand')[:8]
-            latest = ProductModel.objects.filter(is_available=True, product_owner=request.user).select_related('category', 'brand')[:12]
+            latest = ProductModel.objects.filter(is_available=True, product_owner=request.user).exclude(is_featured=True).select_related('category', 'brand')[:12]
         else:
             featured = ProductModel.objects.filter(is_featured=True, is_available=True).select_related('category', 'brand')[:8]
-            latest = ProductModel.objects.filter(is_available=True).select_related('category', 'brand')[:12]
+            latest = ProductModel.objects.filter(is_available=True).exclude(is_featured=True).select_related('category', 'brand')[:12]
     else:
         featured = ProductModel.objects.filter(is_featured=True, is_available=True).select_related('category', 'brand')[:8]
-        latest = ProductModel.objects.filter(is_available=True).select_related('category', 'brand')[:12]
+        latest = ProductModel.objects.filter(is_available=True).exclude(is_featured=True).select_related('category', 'brand')[:12]
 
     con = {
         'categories' : caegories,
@@ -70,8 +70,7 @@ def product_list(request):
             products = ProductModel.objects.filter(is_available = True).select_related('category', 'brand').order_by('-id')
     else:
         products = ProductModel.objects.filter(is_available = True).select_related('category', 'brand').order_by('-id')
-        
-    categories = CategoryModel.objects.filter(is_active = True)
+
 
     query = request.GET.get('q', '').strip()
     category = request.GET.get('categoryx', '').strip()
@@ -102,7 +101,7 @@ def product_list(request):
 
 
     con = {
-        'categories' : categories,
+        'categories' : CategoryModel.objects.filter(is_active = True),
         'query' : query,
         'selected_category' : category,
         'selected_sort' : sort,
