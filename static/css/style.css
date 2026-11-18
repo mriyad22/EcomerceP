@@ -328,8 +328,16 @@ a {
   .detail-img,
   .detail-placeholder {
     height: 330px;
+
+  .cart-thumb {
+    width: 70px;
+    height: 70px;
   }
-  .form-card {
+}
+
+}
+
+.form-card {
     padding: 1.25rem;
   }
   /* Forms */
@@ -340,12 +348,6 @@ a {
   padding: 2rem;
   box-shadow: var(--shadow);
 }
-  .cart-thumb {
-    width: 70px;
-    height: 70px;
-  }
-}
-
 
 
 .step {

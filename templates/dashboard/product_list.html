@@ -9,10 +9,19 @@
     </div><a href="{% url 'dashboard:product_add' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Add product</a>
   </div>
   <div class="admin-card">
-    <form class="admin-toolbar">
+    <form class="admin-toolbar" id="searchForm">
       <div class="input-group" style="max-width:380px">
-        <input class="form-control" name="q" value="{{ query }}" placeholder="Search name, SKU or category" /><button class="btn btn-primary"><i class="bi bi-search"></i></button>
-      </div><span class="text-muted small">{{ page_obj.paginator.count }} products</span>
+        <input 
+          class="form-control" 
+          id="searchInput"
+          name="q" 
+          value="{{ query }}" 
+          placeholder="Search name, SKU or category" 
+          autocomplete="off"
+        />
+        <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+      </div>
+      <span class="text-muted small">{{ page_obj.paginator.count }} products</span>
     </form>
     <div class="table-responsive">
       <table class="table admin-table">

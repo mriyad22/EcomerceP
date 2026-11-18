@@ -16,8 +16,8 @@
           {% csrf_token %}
           <input type="hidden" name="action" value="product" />
           {{ product_data | crispy }}
-          <button class="btn btn-primary mt-2">Save product</button>
-          <a href="{% url 'dashboard:products' %}" class="btn btn-light border">Cancel</a>
+          <button class="btn btn-primary">Save product</button>
+          <a href="{% url 'dashboard:products' %}" class="btn btn-light border mx-2">Cancel</a>
         </form>
       </div>
 

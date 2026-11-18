@@ -102,7 +102,10 @@ def dashboard(request):
 #------> Product List View
 @staff_required
 def product_list(request):
-    qs = ProductModel.objects.select_related('category', 'brand').order_by('-created_at')
+    if request.user.is_superuser:
+        qs = ProductModel.objects.select_related('category', 'brand').order_by('-created_at')
+    else:
+        qs = ProductModel.objects.filter(product_owner=request.user).select_related('category', 'brand').order_by('-created_at')
     query = request.GET.get('q', '').strip()
     if query:
         qs = qs.filter(
