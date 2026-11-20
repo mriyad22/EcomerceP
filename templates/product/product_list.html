@@ -4,12 +4,27 @@
 
 <section class="emox-listing-banner">
     <div class="container">
-        <div>
-            <span class="emox-kicker">THE SHOPSPHERE COLLECTION</span>
-            <h1>Find your next favorite.</h1>
-            <p>Explore our curated collection of everyday essentials.</p>
+        <div class="emox-hero-slot-store emox-auto-slider" data-interval="4000">
+          {% for trend in trends %}
+            <a class="emox-hero-card-store emox-slide {% if forloop.first %}active{% endif %}" href="#">
+              <img src="{{ trend.image_url }}" alt="{{ trend.heading }}" />
+              <span class="emox-hero-shade-store"></span>
+              <span class="emox-hero-copy-store">
+                <strong>{{ trend.heading }}</strong>
+                <span>{{ trend.summary|truncatechars:105 }}</span>
+              </span>
+            </a>
+          {% empty %}
+            <a class="emox-hero-card-store emox-slide active emox-hero-fallback" href="{% url 'products:product_list' %}">
+              <span class="emox-hero-copy-store">
+                <strong>Special Offers</strong>
+                <span>Enjoy exciting deals on your favorite products.</span>
+                <b>Shop now <i class="bi bi-arrow-up-right"></i></b>
+              </span>
+            </a>
+          {% endfor %}
+          <div class="emox-dots"></div>
         </div>
-        <i class="bi bi-bag-heart"></i>
     </div>
 </section>
 
@@ -21,8 +36,7 @@
         <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
             <div>
                 <span class="eyebrow">Store</span>
-                <h3 class="section-title mb-1">All products</h3>
-                <p class="text-muted mb-0">Discover products that fit your style.</p>
+                <h3 class="text-dark mb-1">Discover all products that fit your style.</h3>
             </div>
             <span class="badge-soft">{{ page_obj.paginator.count }} results</span>
         </div> 
@@ -41,7 +55,7 @@
                 </div>
 
                 <div class="col-sm-6 col-lg-3">
-                    <select class="form-select " name="categoryx" onchange="this.form.submit()">
+                    <select class="form-select form-control " name="categoryx" onchange="this.form.submit()">
                         <option value="">All categories</option>
                         {% for category in categories %}
                         <option value="{{ category.slug }}" {% if selected_category == category.slug %}selected{% endif %}>{{ category.name }}</option>
@@ -50,7 +64,7 @@
                 </div>
 
                 <div class="col-sm-6 col-lg-2">
-                    <select class="form-select" name="sort" onchange="this.form.submit()">
+                    <select class="form-select form-control" name="sort" onchange="this.form.submit()">
                         <option value="">Sort by</option>
                         <option value="new" {% if selected_sort == 'new' %}selected{% endif %}>Newest</option>
                         <option value="low" {% if selected_sort == 'low' %}selected{% endif %}>Price: low</option>
@@ -65,9 +79,9 @@
         
         {% comment %} Product sorted by Category {% endcomment %}
         <div class="d-flex flex-wrap gap-2 mb-4">
-            <a href="{% url 'products:product_list' %}" class="btn btn-sm {% if not selected_category %}btn-primary{% else %}btn-outline-primary{% endif %}">All</a>
+            <a href="{% url 'products:product_list' %}" class="btn btn-sm {% if not selected_category %}btn-primary{% else %}btn border{% endif %}">All</a>
             {% for category in categories %}
-            <a href="?categoryx={{ category.slug }}" class="btn btn-sm {% if selected_category == category.slug %}btn-primary{% else %}btn-outline-primary{% endif %}">{{ category.name }}</a>
+            <a href="?categoryx={{ category.slug }}" class="btn btn btn-sm {% if selected_category == category.slug %}btn-primary{% else %}btn border{% endif %}">{{ category.name }}</a>
             {% endfor %}
         </div> 
         

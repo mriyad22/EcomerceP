@@ -18,7 +18,7 @@
                 <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
             </div>
             
-            <select class="form-select" name="status" style="width:auto" onchange="this.form.submit()">
+            <select class="form-select form-control " name="status" style="width:auto" onchange="this.form.submit()">
                 <option value="">All statuses</option>
                 {% for value, label in statuses %}
                     <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>

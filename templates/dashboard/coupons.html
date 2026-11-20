@@ -11,7 +11,7 @@
   <div class="row g-4">
     <div class="col-xl-5">
       <div class="admin-card">
-        <h5 class="fw-bold mb-1">Create coupon</h5><p class="text-muted small mb-4">Set discount, order minimum and validity dates.</p>
+        <h5 class="fw-bold mb-1">{{heading}}</h5><p class="text-muted small mb-4">{{p}} discount, order minimum and validity dates.</p>
         <form method="post" class="admin-form">
           {% csrf_token %}
           {% for field in form %}
@@ -24,7 +24,8 @@
                 <div class="text-danger small">{{ error }}</div>
               {% endfor %}
             </div>
-          {% endfor %}<button class="btn btn-primary w-100"><i class="bi bi-plus-lg me-1"></i>Create coupon</button>
+          {% endfor %}
+          <button class="btn btn-primary w-100"><i class="bi bi-plus-lg me-1"></i>{{btn}}</button>
         </form>
       </div>
     </div>
@@ -41,7 +42,7 @@
                 <th>Discount</th>
                 <th>Usage</th>
                 <th>Validity</th>
-                <th></th>
+                <th>Acton</th>
               </tr>
             </thead>
             <tbody>
@@ -58,6 +59,7 @@
                     <small>{{ coupon.valid_from|date:'d M Y' }}<br />to {{ coupon.valid_until|date:'d M Y' }}</small>
                   </td>
                   <td>
+                     <a class="btn btn-sm btn-light border my-1" href="{% url 'dashboard:coupon_edit' coupon.pk %}"><i class="bi bi-pencil"></i></a>
                     <form method="post" action="{% url 'dashboard:coupon_delete' coupon.pk %}" onsubmit="return confirm('Delete this coupon?')">
                       {% csrf_token %}<button class="btn btn-sm btn-light border text-danger"><i class="bi bi-trash"></i></button>
                     </form>

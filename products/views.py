@@ -63,6 +63,7 @@ def product_create(request):
 
 #--------> Product list view
 def product_list(request):
+    trends = TrendStuffModel.objects.filter(is_active=True).order_by('-created_at')
     if request.user.is_authenticated:
         if not request.user.is_customer:
             products = ProductModel.objects.filter(is_available = True, product_owner=request.user).select_related('category', 'brand').order_by('-id')
@@ -101,6 +102,7 @@ def product_list(request):
 
 
     con = {
+        'trends' : trends,
         'categories' : CategoryModel.objects.filter(is_active = True),
         'query' : query,
         'selected_category' : category,

@@ -4,59 +4,66 @@
   ShopSphere | Discover better everyday shopping
 {% endblock %}
 {% block content %}
-  <section class="emox-hero-wrap">
+  <section class="emox-hero-wrap-main">
     <div class="container">
-      <div class="emox-hero-grid">
-        {% for trend in trends %}
-          <a class="emox-hero-card" href="{% url 'products:product_list' %}">
-            <img src="{{ trend.image_url }}" alt="{{ trend.heading }}" />
-            <span class="emox-hero-shade"></span>
-            <span class="emox-hero-copy">
-              <strong>{{ trend.heading }}</strong>
-              <span>{{ trend.summary|truncatechars:105 }}</span>
-              <b>Shop now <i class="bi bi-arrow-up-right"></i></b>
-            </span>
-          </a>
-        {% empty %}
-          <a class="emox-hero-card emox-hero-main emox-hero-fallback" href="{% url 'products:product_list' %}">
-            <span class="emox-hero-copy"><small>WELCOME TO SHOPSPHERE</small>
-              <strong>Find something you'll love.</strong><span>Discover great products at prices you'll love.</span>
-              <b>Explore products <i class="bi bi-arrow-up-right"></i></b>
-            </span>
-          </a>
-        {% endfor %}
+      <div class="emox-hero-grid-main">
         
-         <a class="emox-hero-card {% if forloop.first %}
-              emox-hero-main
-            {% else %}
-              emox-hero-side
-            {% endif %}"
-            href="{% url 'products:product_list' %}">
-            <img src="{{ trend.image_url }}" alt="{{ trend.heading }}" />
-            <span class="emox-hero-shade"></span>
-            <span class="emox-hero-copy">
-              <small>
-                {% if forloop.first %}
-                  DISCOVER THE COLLECTION
-                {% else %}
-                  LIMITED TIME OFFER
-                {% endif %}
-              </small>
-              <strong>{{ trend.heading }}</strong>
-              <span>{{ trend.summary|truncatechars:105 }}</span>
-              <b>Shop now <i class="bi bi-arrow-up-right"></i></b>
-            </span>
-          </a>
-      </div>
+        <!-- Large card on the left (Can be seen on all screens) -->
+        <div class="emox-hero-slot-left emox-auto-slider" data-interval="4000">
+          {% for trend in trends %}
+            <a class="emox-hero-card-main emox-slide {% if forloop.first %}active{% endif %}" href="{% url 'products:product_list' %}">
+              <img src="{{ trend.image_url }}" alt="{{ trend.heading }}" />
+              <span class="emox-hero-shade-main"></span>
+              <span class="emox-hero-copy-main">
+                <strong>{{ trend.heading }}</strong>
+                <span>{{ trend.summary|truncatechars:105 }}</span>
+                <b>Shop now <i class="bi bi-arrow-up-right"></i></b>
+              </span>
+            </a>
+          {% empty %}
+            <a class="emox-hero-card-main emox-slide active emox-hero-fallback" href="{% url 'products:product_list' %}">
+              <span class="emox-hero-copy-main">
+                <strong>Special Offers</strong>
+                <span>Enjoy exciting deals on your favorite products.</span>
+                <b>Shop now <i class="bi bi-arrow-up-right"></i></b>
+              </span>
+            </a>
+          {% endfor %}
+          <div class="emox-dots"></div>
+        </div>
 
-      <div class="emox-trust-row">
-        <span><i class="bi bi-truck"></i> Reliable delivery</span>
-          <span><i class="bi bi-shield-check"></i> Secure checkout</span>
-          <span><i class="bi bi-arrow-repeat"></i> Easy order tracking</span>
-          <span><i class="bi bi-headset"></i> Helpful support</span>
+        <!-- Card on the right (Can only be seen on computer screen) -->
+        <div class="emox-hero-slot-right emox-desktop-only emox-auto-slider" data-interval="5000">
+          {% for item in trends %}
+            <a class="emox-hero-card-main emox-slide {% if forloop.first %}active{% endif %}" href="{% url 'products:product_list' %}">
+              <img src="{{ item.image_url }}" alt="{{ item.heading }}" />
+              <span class="emox-hero-shade-main"></span>
+              <span class="emox-hero-copy-main">
+                <strong>{{ item.heading }}</strong>
+                <span>{{ item.summary|truncatechars:85 }}</span>
+                <b>Shop now <i class="bi bi-arrow-up-right"></i></b>
+              </span>
+            </a>
+          {% empty %}
+            <a class="emox-hero-card-main emox-slide active emox-hero-fallback" href="{% url 'products:product_list' %}">
+              <span class="emox-hero-copy-main">
+                <strong>Latest Collections</strong>
+                <span>Explore our latest products and collections.</span>
+                <b>Shop now <i class="bi bi-arrow-up-right"></i></b>
+              </span>
+            </a>
+          {% endfor %}
+          <div class="emox-dots"></div>
+        </div>
+
       </div>
     </div>
   </section>
+
+
+
+
+
 
   <section class="emox-section" id="categories">
     <div class="container">
@@ -103,22 +110,63 @@
     </div>
   </section>
 
+
+  <!-- Small card on the middle -->
   {% if trends|length > 2 %}
     <section class="emox-promo-section">
       <div class="container">
         <div class="emox-promo-grid">
-          {% for trend in trends|slice:'2:5' %}
-            <a class="emox-promo-card" href="{% url 'products:product_list' %}">
-              <img src="{{ trend.image_url }}" alt="{{ trend.heading }}" />
-              <span>
-                <small>SHOPSPHERE PICKS</small>
-                <strong>{{ trend.heading }}</strong><b>Shop now <i class="bi bi-arrow-up-right"></i></b>
-              </span>
-            </a>
-          {% endfor %}
+          
+          <!-- 1st Promo Slider Card (visible on both computer and mobile screens) -->
+          <div class="emox-promo-slot emox-auto-slider" data-interval="3500">
+            {% for trend in trends %}
+              <a class="emox-promo-card emox-slide {% if forloop.first %}active{% endif %}" href="{% url 'products:product_list' %}">
+                <img src="{{ trend.image_url }}" alt="{{ trend.heading }}" />
+                <span>
+                  <small>SHOPSPHERE PICKS</small>
+                  <strong>{{ trend.heading }}</strong>
+                  <b>Shop now <i class="bi bi-arrow-up-right"></i></b>
+                </span>
+              </a>
+            {% endfor %}
+            <div class="emox-dots"></div>
+          </div>
+
+          <!-- 2nd Promo Slider Card (visible only on computer screens) -->
+          <div class="emox-promo-slot emox-desktop-only emox-auto-slider" data-interval="4500">
+            {% for trend in trends|slice:"1:" %}
+              <a class="emox-promo-card emox-slide {% if forloop.first %}active{% endif %}" href="{% url 'products:product_list' %}">
+                <img src="{{ trend.image_url }}" alt="{{ trend.heading }}" />
+                <span>
+                  <small>TRENDING NOW</small>
+                  <strong>{{ trend.heading }}</strong>
+                  <b>Shop now <i class="bi bi-arrow-up-right"></i></b>
+                </span>
+              </a>
+            {% endfor %}
+            <div class="emox-dots"></div>
+          </div>
+
+          <!-- 3rd Promo Slider Card (visible only on computer screens) -->
+          <div class="emox-promo-slot emox-desktop-only emox-auto-slider" data-interval="5500">
+            {% for trend in trends|slice:"-1:0" %}
+              <a class="emox-promo-card emox-slide {% if forloop.first %}active{% endif %}" href="{% url 'products:product_list' %}">
+                <img src="{{ trend.image_url }}" alt="{{ trend.heading }}" />
+                <span>
+                  <small>FEATURED DEALS</small>
+                  <strong>{{ trend.heading }}</strong>
+                  <b>Shop now <i class="bi bi-arrow-up-right"></i></b>
+                </span>
+              </a>
+            {% endfor %}
+            <div class="emox-dots"></div>
+          </div>
+
         </div>
       </div>
     </section>
+
+
   {% endif %}
 
   <section class="emox-section">

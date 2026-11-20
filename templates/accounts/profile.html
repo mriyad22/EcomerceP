@@ -57,7 +57,10 @@
 
           {% comment %} Address template {% endcomment %}
           <div class="soft-card p-4 mt-3">
-            {% for a in address %}
+            {% include 'order/address_form.html' with form=address_form %}
+
+
+            {% comment %} {% for a in address %}
               <h4 class="fw-bold">Your address</h4>
               <ul class="list-group">
                 <li class="list-group-item">Name: {{a.full_name}}</li>
@@ -67,7 +70,7 @@
                 
                   <a href="{% url 'order:address_create' %}" class="list-group-item btn-primary text-light text-center">Update address</a>
                 
-              {% empty %}
+                {% empty %}
                 <div class="empty-state">
                   <div class="empty-icon">
                     <i class="bi bi-home"></i>
@@ -75,7 +78,7 @@
                   <a href="{% url 'order:address_create' %}" class="btn btn-primary">Create address</a>
                 </div>
               </ul>
-            {% endfor %}
+            {% endfor %} {% endcomment %}
           </div>
 
         </div>
