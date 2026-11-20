@@ -22,7 +22,8 @@ urlpatterns = [
     path('dashboard/brands/<int:pk>/delete/', brand_delete, name='brands_delete'),
 
     #-------> Coupon url
-    path('dashboard/coupons/', coupons, name='coupons'),
+    path('dashboard/coupon/', coupons, name='coupons'),
+    path('dashboard/coupon/<int:coupon_edit>/update/', coupon_edit, name='coupon_edit'),
     path('dashboard/coupons/<int:pk>/delete/', coupon_delete, name='coupon_delete'),
 
     #-------> Product orders url

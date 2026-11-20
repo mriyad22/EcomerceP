@@ -268,7 +268,30 @@ def coupons(request):
 
     context = {
         'form': form, 
-        'coupons': items
+        'coupons': items,
+        'heading' : 'Create coupon',
+        'p' : 'Set',
+        'btn' : 'Create coupon'
+    }
+    return render(request, 'dashboard/coupons.html', context)
+
+#---------> Edit a coupon View
+@staff_required
+def coupon_edit(request, coupon_edit):
+    coupon_edit = get_object_or_404(CouponModel, pk=coupon_edit)
+    form = CouponForm(request.POST or None , instance=coupon_edit)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Coupon successfully updated.')
+        return redirect('dashboard:coupons')
+    items = CouponModel.objects.order_by('-created_at')
+
+    context = {
+        'form': form, 
+        'coupons': items,
+        'heading' : 'Update coupon',
+        'p' : 'Update',
+        'btn' : 'Update'
     }
     return render(request, 'dashboard/coupons.html', context)
 
