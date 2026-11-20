@@ -8,15 +8,23 @@
         <p class="footer-description">Thoughtful finds for every part of your day. Discover products you'll love, all in one place.</p>
       </div>
       <div class="col-6 col-lg-2">
-        <h6>Explore</h6><a href="{% url 'products:product_list' %}">All products</a><a href="{% url 'products:home' %}#categories">Categories</a><a href="{% url 'wishlist:wishlist_detail' %}">Wishlist</a>
+        <h6>Explore</h6>
+        <a href="{% url 'products:product_list' %}">All products</a>
+        <a href="{% url 'products:home' %}#categories">Categories</a>
+        <a href="{% url 'wishlist:wishlist_detail' %}">Wishlist</a>
       </div>
       <div class="col-6 col-lg-2">
-        <h6>Your account</h6><a href="{% url 'accounts:profile' %}">My profile</a><a href="{% url 'order:order_list' %}">My orders</a><a href="{% url 'cart:cart_detail' %}">Shopping bag</a>
+        <h6>Your account</h6>
+        <a href="{% url 'accounts:profile' %}">My profile</a>
+        <a href="{% url 'order:order_list' %}">My orders</a>
+        <a href="{% url 'cart:cart_detail' %}">Shopping bag</a>
       </div>
       <div class="col-lg-4">
         <h6>Stay in the loop</h6><p class="footer-description">Follow the latest arrivals and offers from ShopSphere.</p>
         <div class="footer-social">
-          <span><i class="bi bi-facebook"></i></span><span><i class="bi bi-instagram"></i></span><span><i class="bi bi-whatsapp"></i></span>
+          <a href="https://www.facebook.com/facebook"><span><i class="bi bi-facebook"></i></span></a>
+          <a href="https://www.instagram.com/instagram"><span><i class="bi bi-instagram"></i></span></a>
+          <a href="https://wa.me/8801712345678?text=Hello%2C%20I%20am%20interested%20in%20buying."><span><i class="bi bi-whatsapp"></i></span></a>
         </div>
       </div>
     </div>
