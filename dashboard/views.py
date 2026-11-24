@@ -357,7 +357,7 @@ def order_detail(request, order_number):
     else:
         order_queryset = OrderModel.objects.select_related(
             'user', 'coupon'
-        ).filter(
+        ).filter(   #--> Only those orders will be fetched that contain the product of the currently logged in seller
             order_items__product__product_owner=request.user
         ).distinct().prefetch_related(
             Prefetch(
@@ -446,10 +446,8 @@ def download_order_pdf(request, order_number):
 
     is_admin = request.user.is_superuser
 
-    # --------------------------------
-    # Get Order Based on User Role
-    # --------------------------------
 
+    # Get Order Based on User Role
     if is_admin:
         order_queryset = OrderModel.objects.select_related(
             'user', 'coupon'
@@ -471,10 +469,8 @@ def download_order_pdf(request, order_number):
         order_number=order_number
     )
 
-    # --------------------------------
+   
     # Filter Order Items
-    # --------------------------------
-
     if is_admin:
         order_items = order.order_items.all()
     else:
@@ -485,10 +481,8 @@ def download_order_pdf(request, order_number):
     # Seller's Own Subtotal
     seller_subtotal = sum((item.total_price for item in order_items), 0)
 
-    # --------------------------------
-    # Create PDF Buffer
-    # --------------------------------
 
+    # Create PDF Buffer
     buffer = BytesIO()
     doc = SimpleDocTemplate(
         buffer,
@@ -528,10 +522,8 @@ def download_order_pdf(request, order_number):
 
     elements = []
 
-    # --------------------------------
-    # Header
-    # --------------------------------
 
+    # Header
     elements.append(Paragraph('ShopSphere', styles['ShopTitle']))
     elements.append(
         Paragraph(
@@ -542,9 +534,8 @@ def download_order_pdf(request, order_number):
 
     elements.append(Spacer(1, 5 * mm))
 
-    # --------------------------------
+
     # Order Information
-    # --------------------------------
     elements.append( Paragraph('Order Information', styles['SectionHeading']))
     created_at = timezone.localtime(order.created_at)
     order_info = [
@@ -571,10 +562,8 @@ def download_order_pdf(request, order_number):
 
     elements.append(info_table)
 
-    # --------------------------------
-    # Customer Information
-    # --------------------------------
 
+    # Customer Information
     elements.append(
         Paragraph('Customer Information', styles['SectionHeading'])
     )
@@ -601,10 +590,8 @@ def download_order_pdf(request, order_number):
 
     elements.append(customer_table)
 
-    # --------------------------------
-    # Product Information
-    # --------------------------------
 
+    # Product Information
     elements.append(
         Paragraph('Products in this Order', styles['SectionHeading'])
     )
@@ -654,10 +641,8 @@ def download_order_pdf(request, order_number):
 
     elements.append(product_table)
 
-    # --------------------------------
+  
     # Total Calculation
-    # --------------------------------
-
     elements.append(Spacer(1, 6 * mm))
 
     if is_admin:
@@ -686,10 +671,8 @@ def download_order_pdf(request, order_number):
 
     elements.append(total_table)
 
-    # --------------------------------
-    # Seller Information
-    # --------------------------------
 
+    # Seller Information
     if not is_admin:
         elements.append(Spacer(1, 8 * mm))
         seller_name = (
@@ -704,10 +687,8 @@ def download_order_pdf(request, order_number):
             )
         )
 
-    # --------------------------------
-    # Footer
-    # --------------------------------
 
+    # Footer
     elements.append(Spacer(1, 15 * mm))
     elements.append(
         Paragraph(
@@ -722,10 +703,8 @@ def download_order_pdf(request, order_number):
         )
     )
 
-    # --------------------------------
-    # Generate PDF
-    # --------------------------------
 
+    # Generate PDF
     doc.build(elements)
     buffer.seek(0)
     response = HttpResponse(buffer.getvalue(), content_type='application/pdf')
