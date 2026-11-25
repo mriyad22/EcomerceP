@@ -127,7 +127,10 @@ def product_detail(request, slug):
     )
 
 
-    relevant_products = ProductModel.objects.filter(category=product.category, is_available=True).exclude(slug=product.slug).select_related('category')[:12]
+    relevant_products = ProductModel.objects.filter(
+        category=product.category,
+        is_available=True
+    ).exclude(slug=product.slug).select_related('category')[:12]
 
     con = {
         'product' : product,

@@ -8,6 +8,8 @@
       <div class="mb-4 small text-muted">
         <a href="{% url 'products:product_list' %}">Shop</a> <i class="bi bi-chevron-right mx-1"></i> {{ product.category.name }} <i class="bi bi-chevron-right mx-1"></i> {{ product.name }}
       </div>
+
+      <!-- Product Detail here -->
       <div class="row g-5">
         <div class="col-lg-6">
           <div class="detail-media">
@@ -100,7 +102,7 @@
             </form>
 
             
-            {% comment %} Add Wishlist template {% endcomment %} 
+            <!-- Add Wishlist template -->  
             <form method="post" action="{% url 'wishlist:toggle' product.id %}" class="mt-2">
               {% csrf_token %}
               <button type="submit" class="btn btn-light border" title="Add to wishlist"><i class="bi bi-heart me-1"></i> Add to wishlist</button>
@@ -115,7 +117,7 @@
       </div>
 
 
-
+      <!-- Customer feedback -->
       <div class="mt-5 pt-5 border-top">
         <div class="d-flex justify-content-between align-items-center mb-4">
           <div>
@@ -178,7 +180,7 @@
       </div>
     </div>
 
-    {% comment %} Relevant products page {% endcomment %}
+    <!-- Relevant products page --> 
     <section class="section-sm">
       <div class="container">
         <div class="d-flex justify-content-between align-items-end mb-4">

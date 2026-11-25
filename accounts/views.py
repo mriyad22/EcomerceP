@@ -22,11 +22,11 @@ def register_view(request):
             messages.success(request, "Account created successfully. Welcome to our store!")
             return redirect("products:home")
     
-    con = {
+    context = {
         "data" : form_data, 
         "title" : "Create Account | ShopSphere"
     }
-    return render(request, "accounts/register.html", con)
+    return render(request, "accounts/register.html", context)
 
 
 
@@ -48,13 +48,13 @@ def login_view(request):
             
             return redirect("products:home")
 
-    con = {
+    context = {
         "data" : form_data,
         "page_title" : "User Login",
         "title" : "login",
         "btn" : "Login"
     }
-    return render(request, "accounts/login.html", con)
+    return render(request, "accounts/login.html", context)
 
 
 
@@ -78,10 +78,10 @@ def profile_view(request):
         return redirect("accounts:profile")
 
 
-    con = {
+    context = {
         "data" : form_data,
         "page_title" : "User profile update",
         "title" : "My Profile | ShopSphere",
         'address' : user_address
     }
-    return render(request, "accounts/profile.html", con)
+    return render(request, "accounts/profile.html", context)

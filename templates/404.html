@@ -1,0 +1,68 @@
+{% extends 'master/base.html' %}
+
+{% block title %}
+    404 - Page Not Found | ShopSphere
+{% endblock %}
+
+{% block content %}
+
+    <!-- Error Content -->
+    <main class="error-content">
+
+        <div class="error-container">
+
+            <!-- Illustration -->
+            <div class="illustration">
+
+                <div class="floating-circle circle-one"></div>
+                <div class="floating-circle circle-two"></div>
+                <div class="floating-circle circle-three"></div>
+
+                <div class="number">404</div>
+
+                <div class="shopping-bag"></div>
+
+            </div>
+
+
+            <!-- Error Text -->
+            <div class="error-badge">
+                ERROR 404
+            </div>
+
+            <h1 class="error-title">
+                Oops! Page Not Found
+            </h1>
+
+            <p class="error-description">
+                Looks like this page has gone shopping!
+                The page you're looking for doesn't exist,
+                has been moved, or is temporarily unavailable.
+                Don't worry, there's plenty more to explore.
+            </p>
+
+
+            <!-- Actions -->
+            <div class="error-actions">
+
+                <a href="/" class="btn-home">
+                    <span>←</span>
+                    Back to Home
+                </a>
+
+                <button
+                    type="button"
+                    onclick="history.back()"
+                    class="btn-back"
+                >
+                    Go Back
+                </button>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+{% endblock %}

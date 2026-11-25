@@ -39,7 +39,7 @@ def dashboard(request):
         orders = OrderModel.objects.all()
         low_stock = ProductModel.objects.filter(stock__lte=5).order_by('stock')[:6]
 
-        # Admin: Total Revenue
+        #--> Admin: Total Revenue
         total_revenue = orders.filter(
             payment_status=OrderModel.PaymentStatus.PAID
         ).aggregate(
@@ -47,11 +47,11 @@ def dashboard(request):
         )['total'] or 0
 
     elif request.user.is_staff:
-        # Seller: Own Products
+        #--> Seller: Own Products
         total_products = ProductModel.objects.filter(product_owner=request.user).count()
 
-        # Seller: Only Orders containing their products
-        # 'values_list()' is used to retrieve the values ​​of specific fields only.
+        #--> Seller: Only Orders containing their products
+        #--> 'values_list()' is used to retrieve the values ​​of specific fields only.
         seller_order_ids = OrderItemModel.objects.filter(
             product__product_owner=request.user
         ).values_list('order_id', flat=True)    #--> 'flat=True' is used to break down the inner tuples and convert the output data into a simple, flat list.
@@ -66,13 +66,13 @@ def dashboard(request):
         orders = OrderModel.objects.filter(pk__in=seller_order_ids)
         #--> The advantage of using 'pk__in' here is that even if an order contains multiple products from the same seller, the order will appear only once.
 
-        # Seller: Own Low Stock Products
+        #--> Seller: Own Low Stock Products
         low_stock = ProductModel.objects.filter(
             product_owner=request.user,
             stock__lte=5
         ).order_by('stock')[:6]
 
-        # Seller: Revenue from own products only
+        #--> Seller: Revenue from own products only
         total_revenue = OrderItemModel.objects.filter(
             product__product_owner=request.user,
             order__payment_status=OrderModel.PaymentStatus.PAID
